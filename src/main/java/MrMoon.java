@@ -66,7 +66,7 @@ public class MrMoon {
 
     private static void printUnknown(String input) {
         printLine();
-        System.out.println("    Unknown command: " + input);
+        System.out.println("    IDK what " + input + " means!");
         System.out.println("    Try one of:");
         System.out.println("    - todo <description>");
         System.out.println("    - deadline <description> /by <date/time>");
