@@ -2,12 +2,25 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class MrMoon {
-    private static final int LINE_LENGTH = 80;
+    private static final int LINE_LENGTH = 50;
     private static final String LINE = "_".repeat(LINE_LENGTH);
     private static final ArrayList<String> items = new ArrayList<>();
 
     private static void printLine() {
         System.out.println(LINE);
+    }
+
+    private static void printList() {
+        printLine();
+        if (items.isEmpty()) {
+            System.out.println("    " + "There are no items in your list!");
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                int n = i + 1;
+                System.out.println("    " + n + ". " + items.get(i));
+            }
+        }
+        printLine();
     }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -25,16 +38,7 @@ public class MrMoon {
                 break;
             }
             if (input.equalsIgnoreCase("list")) {
-                printLine();
-                if (items.isEmpty()) {
-                    System.out.println("    " + "There are no items in your list!");
-                } else {
-                    for (int i = 0; i < items.size(); i++) {
-                        int n = i + 1;
-                        System.out.println("    " + n + ". " + items.get(i));
-                    }
-                }
-                printLine();
+                printList();
                 continue;
             }
             items.add(input);
