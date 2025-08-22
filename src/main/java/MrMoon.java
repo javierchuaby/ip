@@ -168,7 +168,13 @@ public class MrMoon {
             printUnknown(input);
         }
         printLine();
-        System.out.println("    " + "Bye. Hope to see you again soon!");
+        System.out.println(
+                """
+                            Bye bye. Talk to you again tmr!
+                        
+                            Cheers,
+                            Mr Moon\
+                        """);
         printLine();
     }
 }
