@@ -12,8 +12,8 @@ public class MrMoon {
 
         printLine();
         System.out.println(
-                "Hello! I'm Mr Moon!\n" +
-                "What can I do for you?"
+                "    " + "Hello! I'm Mr Moon!\n" +
+                "    " + "What can I do for you?"
         );
         printLine();
 
@@ -22,10 +22,12 @@ public class MrMoon {
             if (input.equalsIgnoreCase("bye")) {
                 break;
             }
-            System.out.println(input);
+            printLine();
+            System.out.println("    " + input);
+            printLine();
         }
         printLine();
-        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println("    " + "Bye. Hope to see you again soon!");
         printLine();
     }
 }
