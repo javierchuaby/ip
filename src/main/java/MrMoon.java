@@ -2,16 +2,10 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class MrMoon {
-    private static final int LINE_LENGTH = 50;
-    private static final String LINE = "_".repeat(LINE_LENGTH);
     private static final ArrayList<Task> items = new ArrayList<>();
 
-    private static void printLine() {
-        System.out.println(LINE);
-    }
-
     private static void printList() {
-        printLine();
+        Ui.printLine();
         if (items.isEmpty()) {
             System.out.println("    " + "You have no tasks in your list!");
         } else {
@@ -21,26 +15,26 @@ public class MrMoon {
                 System.out.println("    " + n + ". " + items.get(i));
             }
         }
-        printLine();
+        Ui.printLine();
     }
 
     private static void added(Task t) {
         items.add(t);
-        printLine();
+        Ui.printLine();
         System.out.println("    Got it! I've added this task:");
         System.out.println("      " + t);
         System.out.println("    Now you have " + items.size() + " tasks in the list.");
-        printLine();
+        Ui.printLine();
     }
 
     private static void deleteTask(int index) {
         Task task = items.remove(index);
 
-        printLine();
+        Ui.printLine();
         System.out.println("    No problem! I've deleted this task:");
         System.out.println("      " + task);
         System.out.println("    Now you have " + items.size() + " tasks in the list.");
-        printLine();
+        Ui.printLine();
     }
 
     private static Integer parseIndex(String input, String command) {
@@ -64,18 +58,18 @@ public class MrMoon {
         if (mark) task.mark();
         else task.unmark();
 
-        printLine();
+        Ui.printLine();
 
         System.out.println(mark
                 ? "    " + "Nice! I've marked this task as done!"
                 : "    " + "Nice! I've marked this task as not done yet!");
 
         System.out.println("    " + task);
-        printLine();
+        Ui.printLine();
     }
 
     private static void printUnknown(String input) {
-        printLine();
+        Ui.printLine();
         System.out.println("    IDK what " + input + " means!");
         System.out.println("    Try one of:");
         System.out.println("    - todo <description>");
@@ -84,18 +78,13 @@ public class MrMoon {
         System.out.println("    - list");
         System.out.println("    - mark <task-number> | unmark <task-number>");
         System.out.println("    - bye");
-        printLine();
+        Ui.printLine();
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        printLine();
-        System.out.println(
-                "    " + "Hello! I'm Mr Moon!\n" +
-                "    " + "What can I do for you?"
-        );
-        printLine();
+        Ui.printWelcome();
 
         while (true) {
             String input = sc.nextLine().trim();
@@ -113,7 +102,7 @@ public class MrMoon {
             if (lower.startsWith("todo ")) {
                 String desc = input.substring(5).trim();
                 if (desc.isEmpty()) {
-                    printLine(); System.out.println("    Please use: todo <description>"); printLine(); continue;
+                    Ui.printLine(); System.out.println("    Please use: todo <description>"); Ui.printLine(); continue;
                 }
                 added(new Todo(desc));
                 continue;
@@ -123,12 +112,12 @@ public class MrMoon {
             if (lower.startsWith("deadline ")) {
                 int byPos = lower.indexOf(" /by ");
                 if (byPos == -1) {
-                    printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); printLine(); continue;
+                    Ui.printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); Ui.printLine(); continue;
                 }
                 String desc = input.substring(9, byPos).trim();            // 9 = "deadline ".length()
                 String by   = input.substring(byPos + 5).trim();           // 5 = " /by ".length()
                 if (desc.isEmpty() || by.isEmpty()) {
-                    printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); printLine(); continue;
+                    Ui.printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); Ui.printLine(); continue;
                 }
                 added(new Deadline(desc, by));
                 continue;
@@ -139,13 +128,13 @@ public class MrMoon {
                 int fromPos = lower.indexOf(" /from ");
                 int toPos   = (fromPos == -1) ? -1 : lower.indexOf(" /to ", fromPos + 7);
                 if (fromPos == -1 || toPos == -1) {
-                    printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); printLine(); continue;
+                    Ui.printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); Ui.printLine(); continue;
                 }
                 String desc = input.substring(6, fromPos).trim();          // 6 = "event ".length()
                 String from = input.substring(fromPos + 7, toPos).trim();  // 7 = " /from ".length()
                 String to   = input.substring(toPos + 5).trim();           // 5 = " /to ".length()
                 if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
-                    printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); printLine(); continue;
+                    Ui.printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); Ui.printLine(); continue;
                 }
                 added(new Event(desc, from, to));
                 continue;
@@ -157,9 +146,9 @@ public class MrMoon {
                 markOrUnmark(index, true);
                 continue;
             } else if (input.toLowerCase().startsWith("mark")) {
-                printLine();
+                Ui.printLine();
                 System.out.println("    Please use: mark <task-number>");
-                printLine();
+                Ui.printLine();
                 continue;
             }
 
@@ -169,9 +158,9 @@ public class MrMoon {
                 markOrUnmark(index, false);
                 continue;
             } else if (input.toLowerCase().startsWith("unmark")) {
-                printLine();
+                Ui.printLine();
                 System.out.println("    Please use: unmark <task-number>");
-                printLine();
+                Ui.printLine();
                 continue;
             }
 
@@ -181,22 +170,14 @@ public class MrMoon {
                 deleteTask(indexDlt);
                 continue;
             }  else if (input.toLowerCase().startsWith("delete")) {
-                printLine();
+                Ui.printLine();
                 System.out.println("    Please use: delete <task-number>");
-                printLine();
+                Ui.printLine();
                 continue;
             }
 
             printUnknown(input);
         }
-        printLine();
-        System.out.println(
-                """
-                            Bye bye. Talk to you again tmr!
-                        
-                            Cheers,
-                            Mr Moon\
-                        """);
-        printLine();
+        Ui.printGoodbye();
     }
 }
