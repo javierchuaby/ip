@@ -15,12 +15,20 @@ public class Task {
         this.isDone = false;
     }
 
-    private String statusIcon() {
+    protected String statusIcon() {
         return this.isDone ? "X" : " ";
+    }
+
+    protected String typeTag() {
+        return "?";
+    }
+
+    protected String extra() {
+        return "";
     }
 
     @Override
     public String toString() {
-        return "[" + statusIcon() + "] " + description;
+        return "[" + typeTag() + "] [" + statusIcon() + "] " + description + extra();
     }
 }
