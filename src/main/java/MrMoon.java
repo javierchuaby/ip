@@ -33,6 +33,16 @@ public class MrMoon {
         printLine();
     }
 
+    private static void deleteTask(int index) {
+        Task task = items.remove(index);
+
+        printLine();
+        System.out.println("    No problem! I've deleted this task:");
+        System.out.println("      " + task);
+        System.out.println("    Now you have " + items.size() + " tasks in the list.");
+        printLine();
+    }
+
     private static Integer parseIndex(String input, String command) {
         String lowerInput = input.toLowerCase();
         String lowerCommand = command.toLowerCase();
@@ -161,6 +171,18 @@ public class MrMoon {
             } else if (input.toLowerCase().startsWith("unmark")) {
                 printLine();
                 System.out.println("    Please use: unmark <task-number>");
+                printLine();
+                continue;
+            }
+
+            /* -------- delete -------- */
+            Integer indexDlt = parseIndex(input, "delete");
+            if (indexDlt != null) {
+                deleteTask(indexDlt);
+                continue;
+            }  else if (input.toLowerCase().startsWith("delete")) {
+                printLine();
+                System.out.println("    Please use: delete <task-number>");
                 printLine();
                 continue;
             }
