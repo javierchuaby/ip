@@ -7,215 +7,80 @@ public class MrMoon {
     private final Parser parser;
     private final Scanner scanner;
 
-    public MrMoon() {
+    public MrMoon(String filePath) {
         this.ui = new Ui(System.out);
         this.parser = new Parser();
-        Storage storage = new Storage();
-        List<Task> loaded = storage.load();
-        this.tasks = new TaskList(storage, loaded);
+        Storage storage = new Storage(filePath);
         this.scanner = new Scanner(System.in);
+
+        List<Task> loaded;
+        try {
+            loaded = storage.load();
+        } catch (Exception e) {
+            ui.printUsage("Could not load existing tasks. Starting with an empty list.");
+            loaded = List.of();
+        }
+        this.tasks = new TaskList(storage, loaded);
+    }
+
+    public MrMoon() {
+        this("data/duke.txt");
     }
 
     public static void main(String[] args) {
-        new MrMoon().run();
+        String filePath = args.length > 0 ? args[0] : "data/duke.txt";
+        new MrMoon(filePath).run();
     }
 
     public void run() {
         ui.printWelcome();
+        boolean waitingForClearConfirmation = false;
+
         try (scanner) {
-            label:
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String cmd = parser.getCommandWord(line);
-                String args = parser.getArguments(line);
-                switch (cmd) {
-                    case "":
-                        ui.printUnknownEmpty();
-                        continue;
-                    case "bye":
-                        ui.printGoodbye();
-                        break label;
-                    case "list":
-                        ui.printList(tasks.asUnmodifiable());
-                        continue;
-                    case "todo":
-                        handleTodo(args);
-                        continue;
-                    case "deadline":
-                        handleDeadline(args);
-                        continue;
-                    case "event":
-                        handleEvent(args);
-                        continue;
-                    case "mark":
-                        handleMark(args, true);
-                        continue;
-                    case "unmark":
-                        handleMark(args, false);
-                        continue;
-                    case "delete":
-                        handleDelete(args);
-                        continue;
-                    case "on":
-                        handleAgendaOn(line.substring(3));
-                        continue;
-                    case "clear":
-                        handleClear();
-                        continue;
-                    default:
-                        ui.printUnknown(line);
+
+                if (waitingForClearConfirmation) {
+                    boolean validResponse = handleClearConfirmation(line.trim().toLowerCase());
+                    if (validResponse) {
+                        waitingForClearConfirmation = false;
+                    }
+                    continue;
+                }
+
+                Command command;
+                try {
+                    command = parser.parseCommand(line);
+                } catch (Exception e) {
+                    ui.printUsage("Error parsing command: " + e.getMessage());
+                    continue;
+                }
+
+                command.execute(tasks, ui);
+
+                if (command instanceof ClearCommand && tasks.size() > 0) {
+                    waitingForClearConfirmation = true;
+                }
+
+                if (command.isExit()) {
+                    break;
                 }
             }
         }
     }
 
-    private void handleTodo(String args) {
-        String desc = (args == null) ? "" : args.trim();
-        if (desc.isEmpty()) {
-            ui.printUsage("Usage: todo <description>");
-            return;
-        }
-        Task t = new Todo(desc);
-        tasks.add(t);
-        ui.printAdded(t, tasks.size());
-    }
-
-    private void handleDeadline(String args) {
-        String[] parts;
-        try {
-            parts = parser.parseDeadlineArgs(args == null ? "" : args);
-        } catch (IllegalArgumentException ex) {
-            ui.printDeadlineFormat();
-            return;
-        }
-        String desc = parts[0].trim();
-        String whenStr = parts[1].trim();
-        if (desc.isEmpty()) {
-            ui.printDeadlineFormat();
-            return;
-        }
-        try {
-            Deadline d = new Deadline(desc, whenStr);
-            tasks.add(d);
-            ui.printAdded(d, tasks.size());
-        } catch (IllegalArgumentException ex) {
-            ui.printUsage("I couldn’t read that date/time: " + ex.getMessage());
-        }
-    }
-
-    private void handleEvent(String args) {
-        String[] parts;
-        try {
-            parts = parser.parseEventArgs(args == null ? "" : args);
-        } catch (IllegalArgumentException ex) {
-            ui.printEventFormat();
-            return;
-        }
-        String desc = parts[0].trim();
-        String fromStr = parts[1].trim();
-        String toStr   = parts[2].trim();
-        if (desc.isEmpty()) {
-            ui.printEventFormat();
-            return;
-        }
-        try {
-            Event e = new Event(desc, fromStr, toStr);
-            tasks.add(e);
-            ui.printAdded(e, tasks.size());
-        } catch (IllegalArgumentException ex) {
-            ui.printUsage("I couldn’t read those dates/times: " + ex.getMessage());
-        }
-    }
-
-    private void handleMark(String args, boolean mark) {
-        Integer idx = parseOneBasedIndex(args);
-        if (idx == null) {
-            ui.printUsage("Please provide a valid task number.");
-            return;
-        }
-        if (isInvalidOneBased(idx)) {
-            ui.printUsage("Please use a task number between 1 and " + tasks.size() + ".");
-            return;
-        }
-        if (mark) tasks.mark(idx - 1); else tasks.unmark(idx - 1);
-        Task t = tasks.get(idx - 1);
-        ui.printMarked(t, mark);
-    }
-
-    private void handleDelete(String args) {
-        Integer idx = parseOneBasedIndex(args);
-        if (idx == null) {
-            ui.printUsage("Please provide a valid task number.");
-            return;
-        }
-        if (isInvalidOneBased(idx)) {
-            ui.printUsage("Please use a task number between 1 and " + tasks.size() + ".");
-            return;
-        }
-        Task removed = tasks.remove(idx - 1);
-        ui.printDelete(removed, tasks.size());
-    }
-
-    private void handleAgendaOn(String arg) {
-        String raw = (arg == null ? "" : arg.trim());
-        if (raw.isEmpty()) {
-            ui.printAgendaFormat();
-            return;
-        }
-        try {
-            var r = DateTimeUtil.parseLenientResult(raw);
-            var target = r.dt.toLocalDate();
-
-            var matches = tasks.tasksOn(target);
-            ui.printAgendaForDate(target, matches, tasks);
-        } catch (IllegalArgumentException ex) {
-            ui.printUsage("I couldn’t read that date: " + ex.getMessage());
-        }
-    }
-
-    private void handleClear() {
-        if (tasks.size() == 0) {
-            ui.printNoTasksToClear();
-            return;
-        }
-
-        ui.printClearPrompt();
-
-        while (true) {
-            String response = scanner.hasNextLine() ? scanner.nextLine() : null;
-            if (response == null) {
+    private boolean handleClearConfirmation(String response) {
+        switch (response) {
+            case "yes":
+                tasks.clear();
+                ui.printCleared();
+                return true;
+            case "no":
                 ui.printClearCanceled();
-                return;
-            }
-            String ans = response.trim().toLowerCase();
-
-            switch (ans) {
-                case "yes" -> {
-                    tasks.clear();
-                    ui.printCleared();
-                    return;
-                }
-                case "no" -> {
-                    ui.printClearCanceled();
-                    return;
-                }
-                default -> ui.printPleaseTypeYesNo();
-            }
+                return true;
+            default:
+                ui.printPleaseTypeYesNo();
+                return false; // Keep waiting
         }
-    }
-
-    private Integer parseOneBasedIndex(String args) {
-        if (args == null) return null;
-        String s = args.trim();
-        if (s.isEmpty()) return null;
-        try {
-            return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    private boolean isInvalidOneBased(int oneBasedIndex) {
-        return oneBasedIndex < 1 || oneBasedIndex > tasks.size();
     }
 }
