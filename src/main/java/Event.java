@@ -40,6 +40,11 @@ public class Event extends Task {
                 + ", to: "   + DateTimeUtil.toPrettyString(to,   toHasTime) + ")";
     }
 
+    public java.time.LocalDateTime getFromDateTime() { return this.from; }
+    public java.time.LocalDateTime getToDateTime()   { return this.to; }
+    public boolean fromHasTime() { return this.fromHasTime; }
+    public boolean toHasTime()   { return this.toHasTime; }
+
     public String getFrom() { return DateTimeUtil.toStorageString(this.from, this.fromHasTime); }
     public String getTo()   { return DateTimeUtil.toStorageString(this.to,   this.toHasTime); }
 }

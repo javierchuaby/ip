@@ -1,5 +1,6 @@
 import java.io.PrintStream;
 import java.util.List;
+import java.time.LocalDate;
 
 public record Ui(PrintStream out) {
     public void printLine() {
@@ -32,6 +33,8 @@ public record Ui(PrintStream out) {
         out.println("    - event <description> /from <date> <time> /to <date> <time>");
         out.println("    - mark | unmark <index>");
         out.println("    - delete <index>");
+        out.println("    - on <date>");
+        out.println("    - clear (clear all tasks in list)");
         printLine();
     }
 
@@ -44,6 +47,36 @@ public record Ui(PrintStream out) {
         out.println("    - event <description> /from <date time> /to <date time>");
         out.println("    - mark | unmark <index>");
         out.println("    - delete <index>");
+        out.println("    - on <date>");
+        out.println("    - clear (clear all tasks in list)");
+        printLine();
+    }
+
+    public void printAgendaFormat() {
+        printLine();
+        out.println("    Usage: on <date>");
+        out.println("    Examples:");
+        out.println("      on 9 Aug");
+        out.println("      on 2025-12-02");
+        out.println("      on 2/12/2025");
+        printLine();
+    }
+
+    public void printAgendaForDate(LocalDate date, List<Task> items, TaskList fullList) {
+        printLine();
+        out.println("    Tasks on " + date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM uuuu")) + ":");
+        if (items.isEmpty()) {
+            out.println("    (none)");
+            printLine();
+            return;
+        }
+        int i = 1;
+        for (Task t : items) {
+            // Optional: show the original index from the full list (nice UX)
+            int originalIdx = fullList.indexOf(t) + 1; // TaskList should expose indexOf; if not, loop to find
+            out.println("    " + i + ". " + t.toString() + "    [#"+ originalIdx + " in main list]");
+            i++;
+        }
         printLine();
     }
 
@@ -104,6 +137,37 @@ public record Ui(PrintStream out) {
     public void printUsage(String message) {
         printLine();
         out.println("    " + message);
+        printLine();
+    }
+
+    public void printNoTasksToClear() {
+        printLine();
+        out.println("    " + "There are no tasks in your list, idiot!");
+        printLine();
+    }
+
+    public void printClearPrompt() {
+        printLine();
+        out.println("    " + "Are you sure you want to clear all tasks?");
+        out.println("    " + "Type 'yes/no' to proceed");
+        printLine();
+    }
+
+    public void printPleaseTypeYesNo() {
+        printLine();
+        out.println("    Please type 'yes' or 'no'.");
+        printLine();
+    }
+
+    public void printCleared() {
+        printLine();
+        out.println("    " + "All tasks have been cleared!");
+        printLine();
+    }
+
+    public void printClearCanceled() {
+        printLine();
+        out.println("    " + "lol gay");
         printLine();
     }
 }

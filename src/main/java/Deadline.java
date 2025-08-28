@@ -17,6 +17,14 @@ public class Deadline extends Task {
         this.byHasTime = hasTime;
     }
 
+    public java.time.LocalDateTime getByDateTime() {
+        return this.by;
+    }
+
+    public boolean hasTime() {
+        return this.byHasTime;
+    }
+
     @Override
     protected String typeTag() { return "D"; }
 

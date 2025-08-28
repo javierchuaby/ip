@@ -5,6 +5,7 @@ public class MrMoon {
     private final TaskList tasks;
     private final Ui ui;
     private final Parser parser;
+    private final Scanner scanner;
 
     public MrMoon() {
         this.ui = new Ui(System.out);
@@ -12,6 +13,7 @@ public class MrMoon {
         Storage storage = new Storage();
         List<Task> loaded = storage.load();
         this.tasks = new TaskList(storage, loaded);
+        this.scanner = new Scanner(System.in);
     }
 
     public static void main(String[] args) {
@@ -20,10 +22,10 @@ public class MrMoon {
 
     public void run() {
         ui.printWelcome();
-        try (Scanner sc = new Scanner(System.in)) {
+        try (scanner) {
             label:
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
                 String cmd = parser.getCommandWord(line);
                 String args = parser.getArguments(line);
                 switch (cmd) {
@@ -53,6 +55,12 @@ public class MrMoon {
                         continue;
                     case "delete":
                         handleDelete(args);
+                        continue;
+                    case "on":
+                        handleAgendaOn(line.substring(3));
+                        continue;
+                    case "clear":
+                        handleClear();
                         continue;
                     default:
                         ui.printUnknown(line);
@@ -146,6 +154,54 @@ public class MrMoon {
         }
         Task removed = tasks.remove(idx - 1);
         ui.printDelete(removed, tasks.size());
+    }
+
+    private void handleAgendaOn(String arg) {
+        String raw = (arg == null ? "" : arg.trim());
+        if (raw.isEmpty()) {
+            ui.printAgendaFormat();
+            return;
+        }
+        try {
+            var r = DateTimeUtil.parseLenientResult(raw);
+            var target = r.dt.toLocalDate();
+
+            var matches = tasks.tasksOn(target);
+            ui.printAgendaForDate(target, matches, tasks);
+        } catch (IllegalArgumentException ex) {
+            ui.printUsage("I couldn’t read that date: " + ex.getMessage());
+        }
+    }
+
+    private void handleClear() {
+        if (tasks.size() == 0) {
+            ui.printNoTasksToClear();
+            return;
+        }
+
+        ui.printClearPrompt();
+
+        while (true) {
+            String response = scanner.hasNextLine() ? scanner.nextLine() : null;
+            if (response == null) {
+                ui.printClearCanceled();
+                return;
+            }
+            String ans = response.trim().toLowerCase();
+
+            switch (ans) {
+                case "yes" -> {
+                    tasks.clear();
+                    ui.printCleared();
+                    return;
+                }
+                case "no" -> {
+                    ui.printClearCanceled();
+                    return;
+                }
+                default -> ui.printPleaseTypeYesNo();
+            }
+        }
     }
 
     private Integer parseOneBasedIndex(String args) {
