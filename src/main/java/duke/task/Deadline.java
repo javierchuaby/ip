@@ -3,39 +3,79 @@ package duke.task;
 import duke.util.DateTimeUtil;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a deadline task with a due date and time.
+ * A deadline task has a description and a specific due date/time.
+ * Extends the Task class with date/time functionality.
+ */
 public class Deadline extends Task {
-  private final LocalDateTime by;
-  private final boolean hasTime;
 
-  public Deadline(String description, LocalDateTime by, boolean hasTime) {
-    super(description);
-    this.by = by;
-    this.hasTime = hasTime;
-  }
+    /** The due date and time for this deadline */
+    private final LocalDateTime by;
 
-  public Deadline(String description, String byString) {
-    super(description);
-    DateTimeUtil.ParseResult result = DateTimeUtil.parseLenientResult(byString);
-    this.by = result.dt;
-    this.hasTime = result.hasTime;
-  }
+    /** Whether the due time includes a specific time component */
+    private final boolean hasTime;
 
-  public LocalDateTime getByDateTime() {
-    return by;
-  }
+    /**
+     * Constructs a Deadline task with specified description and due date/time.
+     *
+     * @param description The task description
+     * @param by The due date and time as LocalDateTime
+     * @param hasTime true if the due date includes a specific time, false for date only
+     */
+    public Deadline(String description, LocalDateTime by, boolean hasTime) {
+        super(description);
+        this.by = by;
+        this.hasTime = hasTime;
+    }
 
-  public String getBy() {
-    return DateTimeUtil.toStorageString(by, hasTime);
-  }
+    /**
+     * Constructs a Deadline task by parsing a date/time string.
+     * Uses DateTimeUtil to parse flexible date/time formats.
+     *
+     * @param description The task description
+     * @param byString The due date/time as a string to be parsed
+     * @throws IllegalArgumentException if the date/time string cannot be parsed
+     */
+    public Deadline(String description, String byString) {
+        super(description);
+        DateTimeUtil.ParseResult result = DateTimeUtil.parseLenientResult(byString);
+        this.by = result.dt;
+        this.hasTime = result.hasTime;
+    }
 
-  @Override
-  public String toString() {
-    return "[D] ["
-        + getStatusIcon()
-        + "] "
-        + description
-        + " (by: "
-        + DateTimeUtil.toPrettyString(by, hasTime)
-        + ")";
-  }
+    /**
+     * Returns the due date/time as a LocalDateTime object.
+     *
+     * @return The due date and time
+     */
+    public LocalDateTime getByDateTime() {
+        return by;
+    }
+
+    /**
+     * Returns the due date/time formatted for storage.
+     *
+     * @return The formatted due date/time string for file storage
+     */
+    public String getBy() {
+        return DateTimeUtil.toStorageString(by, hasTime);
+    }
+
+    /**
+     * Returns the string representation of the deadline task.
+     * Format: [D] [status] description (by: formatted_date_time)
+     *
+     * @return A formatted string describing the deadline task
+     */
+    @Override
+    public String toString() {
+        return "[D] ["
+                + getStatusIcon()
+                + "] "
+                + description
+                + " (by: "
+                + DateTimeUtil.toPrettyString(by, hasTime)
+                + ")";
+    }
 }

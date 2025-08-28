@@ -1,34 +1,79 @@
 package duke.task;
 
+/**
+ * Abstract class representing a task in the Duke task management system.
+ * All tasks have a description and completion status.
+ * Subclasses must implement the toString method for display formatting.
+ *
+ * @author Your Name
+ * @version 1.0
+ */
 public abstract class Task {
-  protected String description;
-  protected boolean isDone;
 
-  public Task(String description) {
-    this.description = description;
-    this.isDone = false;
-  }
+    /** The description of the task */
+    protected String description;
 
-  public String getDescription() {
-    return description;
-  }
+    /** Whether the task is marked as completed */
+    protected boolean isDone;
 
-  public boolean isDone() {
-    return isDone;
-  }
+    /**
+     * Constructs a Task with the specified description.
+     * The task is initially marked as not done.
+     *
+     * @param description The description of the task
+     */
+    public Task(String description) {
+        this.description = description;
+        this.isDone = false;
+    }
 
-  public void mark() {
-    isDone = true;
-  }
+    /**
+     * Returns the description of the task.
+     *
+     * @return The task description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-  public void unmark() {
-    isDone = false;
-  }
+    /**
+     * Returns whether the task is marked as done.
+     *
+     * @return true if the task is completed, false otherwise
+     */
+    public boolean isDone() {
+        return isDone;
+    }
 
-  public String getStatusIcon() {
-    return isDone ? "X" : " ";
-  }
+    /**
+     * Marks the task as completed.
+     */
+    public void mark() {
+        isDone = true;
+    }
 
-  @Override
-  public abstract String toString();
+    /**
+     * Marks the task as not completed.
+     */
+    public void unmark() {
+        isDone = false;
+    }
+
+    /**
+     * Returns a status icon representing the completion status.
+     *
+     * @return "X" if the task is done, " " (space) if not done
+     */
+    public String getStatusIcon() {
+        return isDone ? "X" : " ";
+    }
+
+    /**
+     * Returns the string representation of the task.
+     * Must be implemented by subclasses to define their specific format.
+     *
+     * @return A string representation of the task
+     */
+    @Override
+    public abstract String toString();
 }
