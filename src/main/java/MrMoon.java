@@ -37,20 +37,28 @@ public class MrMoon {
         Ui.printLine();
     }
 
-    private static Integer parseIndex(String input, String command) {
-        String lowerInput = input.toLowerCase();
-        String lowerCommand = command.toLowerCase();
+    private static boolean isInvalidOneBased(int n) {
+        return n < 1 || n > items.size();
+    }
 
-        if (!lowerInput.startsWith(lowerCommand + " ")) return null;
-
-        String numPart = input.substring(command.length()).trim();
-        try {
-            int n = Integer.parseInt(numPart);
-            if (n < 1 || n > items.size()) return null;
-            return n - 1;
-        } catch (NumberFormatException e) {
-            return null;
+    private static void markTask(int oneBasedIndex) {
+        if (isInvalidOneBased(oneBasedIndex)) {
+            Ui.printLine();
+            System.out.println("    Please use a task number between 1 and " + items.size() + ".");
+            Ui.printLine();
+            return;
         }
+        markOrUnmark(oneBasedIndex - 1, true);
+    }
+
+    private static void unmarkTask(int oneBasedIndex) {
+        if (isInvalidOneBased(oneBasedIndex)) {
+            Ui.printLine();
+            System.out.println("    Please use a task number between 1 and " + items.size() + ".");
+            Ui.printLine();
+            return;
+        }
+        markOrUnmark(oneBasedIndex - 1, false);
     }
 
     private static void markOrUnmark(int index, boolean mark) {
@@ -59,11 +67,9 @@ public class MrMoon {
         else task.unmark();
 
         Ui.printLine();
-
         System.out.println(mark
                 ? "    " + "Nice! I've marked this task as done!"
                 : "    " + "Nice! I've marked this task as not done yet!");
-
         System.out.println("    " + task);
         Ui.printLine();
     }
@@ -88,96 +94,89 @@ public class MrMoon {
 
         while (true) {
             String input = sc.nextLine().trim();
+            String cmd  = Parser.getCommandWord(input);
+            String arguments = Parser.getArguments(input);
 
-            if (input.equalsIgnoreCase("bye")) { break; }
-
-            if (input.equalsIgnoreCase("list")) {
-                printList();
-                continue;
-            }
-
-            String lower = input.toLowerCase();
-
-            /* -------- todo -------- */
-            if (lower.startsWith("todo ")) {
-                String desc = input.substring(5).trim();
-                if (desc.isEmpty()) {
-                    Ui.printLine(); System.out.println("    Please use: todo <description>"); Ui.printLine(); continue;
+            switch (cmd) {
+                case "bye" -> {
+                    Ui.printGoodbye();
+                    return;
                 }
-                added(new Todo(desc));
-                continue;
-            }
-
-            /* -------- deadline -------- */
-            if (lower.startsWith("deadline ")) {
-                int byPos = lower.indexOf(" /by ");
-                if (byPos == -1) {
-                    Ui.printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); Ui.printLine(); continue;
+                case "list" -> {
+                    printList();
+                    continue;
                 }
-                String desc = input.substring(9, byPos).trim();            // 9 = "deadline ".length()
-                String by   = input.substring(byPos + 5).trim();           // 5 = " /by ".length()
-                if (desc.isEmpty() || by.isEmpty()) {
-                    Ui.printLine(); System.out.println("    Please use: deadline <description> /by <date/time>"); Ui.printLine(); continue;
+                case "mark" -> {
+                    Integer idx = Parser.getFirstIndex(arguments);
+                    if (idx != null) {
+                        markTask(idx);
+                        continue;
+                    }
+                    Ui.printLine();
+                    System.out.println("    Please use: mark <task-number>");
+                    Ui.printLine();
+                    continue;
                 }
-                added(new Deadline(desc, by));
-                continue;
-            }
-
-            /* -------- event -------- */
-            if (lower.startsWith("event ")) {
-                int fromPos = lower.indexOf(" /from ");
-                int toPos   = (fromPos == -1) ? -1 : lower.indexOf(" /to ", fromPos + 7);
-                if (fromPos == -1 || toPos == -1) {
-                    Ui.printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); Ui.printLine(); continue;
+                case "unmark" -> {
+                    Integer idx = Parser.getFirstIndex(arguments);
+                    if (idx != null) {
+                        unmarkTask(idx);
+                        continue;
+                    }
+                    Ui.printLine();
+                    System.out.println("    Please use: unmark <task-number>");
+                    Ui.printLine();
+                    continue;
                 }
-                String desc = input.substring(6, fromPos).trim();          // 6 = "event ".length()
-                String from = input.substring(fromPos + 7, toPos).trim();  // 7 = " /from ".length()
-                String to   = input.substring(toPos + 5).trim();           // 5 = " /to ".length()
-                if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
-                    Ui.printLine(); System.out.println("    Please use: event <description> /from <start> /to <end>"); Ui.printLine(); continue;
+                case "delete" -> {
+                    Integer idx = Parser.getFirstIndex(arguments);
+                    if (idx != null) {
+                        deleteTask(idx);
+                        continue;
+                    }
+                    Ui.printLine();
+                    System.out.println("    Please use: delete <task-number>");
+                    Ui.printLine();
+                    continue;
                 }
-                added(new Event(desc, from, to));
-                continue;
-            }
+                case "todo" -> {
+                    if (arguments.isEmpty()) {
+                        Ui.printLine();
+                        System.out.println("    Please use: todo <description>");
+                        Ui.printLine();
+                        continue;
+                    }
+                    added(new Todo(arguments));
+                    continue;
+                }
+                case "deadline" -> {
+                    String[] parts = Parser.splitDeadline(arguments);
 
-            /* -------- mark -------- */
-            Integer index = parseIndex(input, "mark");
-            if (index != null) {
-                markOrUnmark(index, true);
-                continue;
-            } else if (input.toLowerCase().startsWith("mark")) {
-                Ui.printLine();
-                System.out.println("    Please use: mark <task-number>");
-                Ui.printLine();
-                continue;
-            }
+                    if (parts != null) {
+                        added(new Deadline(parts[0], parts[1]));
+                        continue;
+                    }
+                    Ui.printLine();
+                    System.out.println("    Please use: deadline <description> /by <when>");
+                    Ui.printLine();
+                    continue;
+                }
+                case "event" -> {
+                    String[] parts = Parser.splitEvent(arguments);
 
-            /* -------- unmark -------- */
-            index = parseIndex(input, "unmark");
-            if (index != null) {
-                markOrUnmark(index, false);
-                continue;
-            } else if (input.toLowerCase().startsWith("unmark")) {
-                Ui.printLine();
-                System.out.println("    Please use: unmark <task-number>");
-                Ui.printLine();
-                continue;
-            }
-
-            /* -------- delete -------- */
-            Integer indexDlt = parseIndex(input, "delete");
-            if (indexDlt != null) {
-                deleteTask(indexDlt);
-                continue;
-            }  else if (input.toLowerCase().startsWith("delete")) {
-                Ui.printLine();
-                System.out.println("    Please use: delete <task-number>");
-                Ui.printLine();
-                continue;
+                    if (parts != null) {
+                        added(new Event(parts[0], parts[1], parts[2]));
+                        continue;
+                    }
+                    Ui.printLine();
+                    System.out.println("    Please use: event <description> /from <start> /to <end>");
+                    Ui.printLine();
+                    continue;
+                }
             }
 
             printUnknown(input);
+
         }
-        Ui.printGoodbye();
     }
 }
