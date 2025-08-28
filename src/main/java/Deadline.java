@@ -8,4 +8,6 @@ public class Deadline extends Task{
     protected String typeTag() { return "D"; };
     @Override
     protected String extra() { return " (by: " + by + ")"; }
+
+    public String getBy() { return this.by; }
 }

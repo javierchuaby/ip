@@ -10,4 +10,7 @@ public class Event extends Task{
     protected String typeTag() { return "E"; };
     @Override
     protected String extra() { return " (from: " + from + ", to: " + to + ")"; }
+
+    public String getFrom() { return this.from; }
+    public String getTo() { return this.to; }
 }

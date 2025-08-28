@@ -1,7 +1,6 @@
 public class Parser {
 
-    /** First word in lower-case (e.g., "to-do", "deadline", "event", "mark"). */
-    public static String getCommandWord(String input) {
+    public String getCommandWord(String input) {
         if (input == null) return "";
         String trimmed = input.trim();
         if (trimmed.isEmpty()) return "";
@@ -10,8 +9,7 @@ public class Parser {
         return first.toLowerCase();
     }
 
-    /** Everything after the first word (could be empty). */
-    public static String getArguments(String input) {
+    public String getArguments(String input) {
         if (input == null) return "";
         String trimmed = input.trim();
         int space = trimmed.indexOf(' ');
@@ -19,8 +17,7 @@ public class Parser {
         return trimmed.substring(space + 1).trim();
     }
 
-    /** Try to parse the first integer inside a string (returns null if none). */
-    public static Integer getFirstIndex(String s) {
+    public Integer getFirstIndex(String s) {
         if (s == null) return null;
         int n = s.length();
         int i = 0;
@@ -40,8 +37,7 @@ public class Parser {
         return null;
     }
 
-    /** Split "desc /by when" into [desc, when]; returns array length 2 or null if not valid. */
-    public static String[] splitDeadline(String args) {
+    public String[] splitDeadline(String args) {
         if (args == null) return null;
         String flag = "/by";
         int idx = args.toLowerCase().indexOf(flag);
@@ -52,8 +48,7 @@ public class Parser {
         return new String[]{desc, when};
     }
 
-    /** Split "desc /from start /to end" into [desc, start, end]; returns len 3 or null. */
-    public static String[] splitEvent(String args) {
+    public String[] splitEvent(String args) {
         if (args == null) return null;
         String lo = args.toLowerCase();
         String f = "/from";

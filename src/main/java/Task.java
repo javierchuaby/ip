@@ -31,4 +31,8 @@ public class Task {
     public String toString() {
         return "[" + typeTag() + "] [" + statusIcon() + "] " + description + extra();
     }
+
+    public String getDescription() { return description; }
+    public boolean isDone() { return isDone; }
+
 }
