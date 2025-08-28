@@ -1,21 +1,17 @@
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class MrMoon {
-    private final ArrayList<Task> items = new ArrayList<>();
+    private final TaskList tasks;
     private final Ui ui;
     private final Parser parser;
-    private final Storage storage;
 
     public MrMoon() {
         this.ui = new Ui(System.out);
         this.parser = new Parser();
-        this.storage = new Storage();
+        Storage storage = new Storage();
         List<Task> loaded = storage.load();
-        if (loaded != null) {
-            this.items.addAll(loaded);
-        }
+        this.tasks = new TaskList(storage, loaded);
     }
 
     public static void main(String[] args) {
@@ -24,80 +20,103 @@ public class MrMoon {
 
     public void run() {
         ui.printWelcome();
-        Scanner sc = new Scanner(System.in);
-        label:
-        while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            String cmd = parser.getCommandWord(line);
-            String args = parser.getArguments(line);
-
-            switch (cmd) {
-                case "":
-                    ui.printUnknownEmpty();
-                    continue;
-                case "bye":
-                    ui.printGoodbye();
-                    break label;
-                case "list":
-                    ui.printList(items);
-                    continue;
-                case "todo":
-                    handleTodo(args);
-                    continue;
-                case "deadline":
-                    handleDeadline(args);
-                    continue;
-                case "event":
-                    handleEvent(args);
-                    continue;
-                case "mark":
-                    handleMark(args, true);
-                    continue;
-                case "unmark":
-                    handleMark(args, false);
-                    continue;
-                case "delete":
-                    handleDelete(args);
-                    continue;
+        try (Scanner sc = new Scanner(System.in)) {
+            label:
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String cmd = parser.getCommandWord(line);
+                String args = parser.getArguments(line);
+                switch (cmd) {
+                    case "":
+                        ui.printUnknownEmpty();
+                        continue;
+                    case "bye":
+                        ui.printGoodbye();
+                        break label;
+                    case "list":
+                        ui.printList(tasks.asUnmodifiable());
+                        continue;
+                    case "todo":
+                        handleTodo(args);
+                        continue;
+                    case "deadline":
+                        handleDeadline(args);
+                        continue;
+                    case "event":
+                        handleEvent(args);
+                        continue;
+                    case "mark":
+                        handleMark(args, true);
+                        continue;
+                    case "unmark":
+                        handleMark(args, false);
+                        continue;
+                    case "delete":
+                        handleDelete(args);
+                        continue;
+                    default:
+                        ui.printUnknown(line);
+                }
             }
-            ui.printUnknown(line);
         }
     }
 
     private void handleTodo(String args) {
         String desc = (args == null) ? "" : args.trim();
         if (desc.isEmpty()) {
-            ui.printUsage("Usage: todo <desc>");
+            ui.printUsage("Usage: todo <description>");
             return;
         }
         Task t = new Todo(desc);
-        items.add(t);
-        storage.save(items);
-        ui.printAdded(t, items.size());
+        tasks.add(t);
+        ui.printAdded(t, tasks.size());
     }
 
     private void handleDeadline(String args) {
-        String[] parts = parser.splitDeadline(args);
-        if (parts == null) {
-            ui.printUsage("Usage: deadline <desc> /by <time>");
+        String[] parts;
+        try {
+            parts = parser.parseDeadlineArgs(args == null ? "" : args);
+        } catch (IllegalArgumentException ex) {
+            ui.printDeadlineFormat();
             return;
         }
-        Task t = new Deadline(parts[0], parts[1]);
-        items.add(t);
-        storage.save(items);
-        ui.printAdded(t, items.size());
+        String desc = parts[0].trim();
+        String whenStr = parts[1].trim();
+        if (desc.isEmpty()) {
+            ui.printDeadlineFormat();
+            return;
+        }
+        try {
+            Deadline d = new Deadline(desc, whenStr);
+            tasks.add(d);
+            ui.printAdded(d, tasks.size());
+        } catch (IllegalArgumentException ex) {
+            ui.printUsage("I couldn’t read that date/time: " + ex.getMessage());
+        }
     }
 
     private void handleEvent(String args) {
-        String[] parts = parser.splitEvent(args);
-        if (parts == null) {
-            ui.printUsage("Usage: event <desc> /from <start> /to <end>");
+        String[] parts;
+        try {
+            parts = parser.parseEventArgs(args == null ? "" : args);
+        } catch (IllegalArgumentException ex) {
+            ui.printEventFormat();
             return;
         }
-        Task t = new Event(parts[0], parts[1], parts[2]);
-        items.add(t);
-        storage.save(items);
-        ui.printAdded(t, items.size());
+        String desc = parts[0].trim();
+        String fromStr = parts[1].trim();
+        String toStr   = parts[2].trim();
+        if (desc.isEmpty()) {
+            ui.printEventFormat();
+            return;
+        }
+        try {
+            Event e = new Event(desc, fromStr, toStr);
+            tasks.add(e);
+            ui.printAdded(e, tasks.size());
+        } catch (IllegalArgumentException ex) {
+            ui.printUsage("I couldn’t read those dates/times: " + ex.getMessage());
+        }
     }
 
     private void handleMark(String args, boolean mark) {
@@ -107,12 +126,11 @@ public class MrMoon {
             return;
         }
         if (isInvalidOneBased(idx)) {
-            ui.printUsage("Please use a task number between 1 and " + items.size() + ".");
+            ui.printUsage("Please use a task number between 1 and " + tasks.size() + ".");
             return;
         }
-        Task t = items.get(idx - 1);
-        if (mark) t.mark(); else t.unmark();
-        storage.save(items);
+        if (mark) tasks.mark(idx - 1); else tasks.unmark(idx - 1);
+        Task t = tasks.get(idx - 1);
         ui.printMarked(t, mark);
     }
 
@@ -123,12 +141,11 @@ public class MrMoon {
             return;
         }
         if (isInvalidOneBased(idx)) {
-            ui.printUsage("Please use a task number between 1 and " + items.size() + ".");
+            ui.printUsage("Please use a task number between 1 and " + tasks.size() + ".");
             return;
         }
-        Task removed = items.remove(idx - 1);
-        storage.save(items);
-        ui.printDelete(removed, items.size());
+        Task removed = tasks.remove(idx - 1);
+        ui.printDelete(removed, tasks.size());
     }
 
     private Integer parseOneBasedIndex(String args) {
@@ -143,6 +160,6 @@ public class MrMoon {
     }
 
     private boolean isInvalidOneBased(int oneBasedIndex) {
-        return oneBasedIndex < 1 || oneBasedIndex > items.size();
+        return oneBasedIndex < 1 || oneBasedIndex > tasks.size();
     }
 }

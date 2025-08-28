@@ -1,65 +1,33 @@
 public class Parser {
-
-    public String getCommandWord(String input) {
-        if (input == null) return "";
-        String trimmed = input.trim();
-        if (trimmed.isEmpty()) return "";
-        int space = trimmed.indexOf(' ');
-        String first = (space == -1) ? trimmed : trimmed.substring(0, space);
-        return first.toLowerCase();
+    public String getCommandWord(String line) {
+        String s = line.trim();
+        int sp = s.indexOf(' ');
+        return (sp == -1 ? s : s.substring(0, sp)).toLowerCase();
     }
 
-    public String getArguments(String input) {
-        if (input == null) return "";
-        String trimmed = input.trim();
-        int space = trimmed.indexOf(' ');
-        if (space == -1) return "";
-        return trimmed.substring(space + 1).trim();
+    public String getArguments(String line) {
+        String s = line.trim();
+        int sp = s.indexOf(' ');
+        return sp == -1 ? "" : s.substring(sp + 1).trim();
     }
 
-    public Integer getFirstIndex(String s) {
-        if (s == null) return null;
-        int n = s.length();
-        int i = 0;
-        while (i < n) {
-            char c = s.charAt(i);
-            if (Character.isDigit(c)) {
-                int j = i + 1;
-                while (j < n && Character.isDigit(s.charAt(j))) j++;
-                try {
-                    return Integer.parseInt(s.substring(i, j));
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            }
-            i++;
-        }
-        return null;
+    public String[] parseDeadlineArgs(String args) {
+        int i = args.lastIndexOf("/by");
+        if (i < 0) throw new IllegalArgumentException("Missing /by");
+        String desc = args.substring(0, i).trim();
+        String byRaw = args.substring(i + 3).trim();
+        if (desc.isEmpty() || byRaw.isEmpty()) throw new IllegalArgumentException("Usage");
+        return new String[]{desc, byRaw};
     }
 
-    public String[] splitDeadline(String args) {
-        if (args == null) return null;
-        String flag = "/by";
-        int idx = args.toLowerCase().indexOf(flag);
-        if (idx == -1) return null;
-        String desc = args.substring(0, idx).trim();
-        String when = args.substring(idx + flag.length()).trim();
-        if (desc.isEmpty() || when.isEmpty()) return null;
-        return new String[]{desc, when};
-    }
-
-    public String[] splitEvent(String args) {
-        if (args == null) return null;
-        String lo = args.toLowerCase();
-        String f = "/from";
-        String t = "/to";
-        int iF = lo.indexOf(f);
-        int iT = lo.indexOf(t, iF == -1 ? 0 : iF + f.length());
-        if (iF == -1 || iT == -1) return null;
-        String desc = args.substring(0, iF).trim();
-        String start = args.substring(iF + f.length(), iT).trim();
-        String end = args.substring(iT + t.length()).trim();
-        if (desc.isEmpty() || start.isEmpty() || end.isEmpty()) return null;
-        return new String[]{desc, start, end};
+    public String[] parseEventArgs(String args) {
+        int i = args.lastIndexOf("/from");
+        int j = args.lastIndexOf("/to");
+        if (i < 0 || j < 0 || i >= j) throw new IllegalArgumentException("Missing /from or /to");
+        String desc = args.substring(0, i).trim();
+        String fromRaw = args.substring(i + 5, j).trim();
+        String toRaw = args.substring(j + 3).trim();
+        if (desc.isEmpty() || fromRaw.isEmpty() || toRaw.isEmpty()) throw new IllegalArgumentException("Usage");
+        return new String[]{desc, fromRaw, toRaw};
     }
 }

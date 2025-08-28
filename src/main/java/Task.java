@@ -7,32 +7,18 @@ public class Task {
         this.isDone = false;
     }
 
-    public void mark() {
-        this.isDone = true;
-    }
+    public void mark() { this.isDone = true; }
+    public void unmark() { this.isDone = false; }
 
-    public void unmark() {
-        this.isDone = false;
-    }
-
-    protected String statusIcon() {
-        return this.isDone ? "X" : " ";
-    }
-
-    protected String typeTag() {
-        return "?";
-    }
-
-    protected String extra() {
-        return "";
-    }
+    protected String statusIcon() { return this.isDone ? "X" : " "; }
+    protected String typeTag() { return "?"; }
+    protected String extra() { return ""; }
 
     @Override
     public String toString() {
-        return "[" + typeTag() + "] [" + statusIcon() + "] " + description + extra();
+        return "[" + typeTag() + "][" + statusIcon() + "] " + description + extra();
     }
 
     public String getDescription() { return description; }
     public boolean isDone() { return isDone; }
-
 }

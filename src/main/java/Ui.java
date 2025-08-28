@@ -2,7 +2,6 @@ import java.io.PrintStream;
 import java.util.List;
 
 public record Ui(PrintStream out) {
-
     public void printLine() {
         out.println("    " + "____________________________________________________________");
     }
@@ -29,10 +28,10 @@ public record Ui(PrintStream out) {
         out.println("    " + "Try one of these:");
         out.println("    - list");
         out.println("    - todo <description>");
-        out.println("    - deadline <description> /by <when>");
-        out.println("    - event <description> /from <start> /to <end>");
-        out.println("    - mark <task-number> | unmark <task-number>");
-        out.println("    - delete <task-number>");
+        out.println("    - deadline <description> /by <date> <time>");
+        out.println("    - event <description> /from <date> <time> /to <date> <time>");
+        out.println("    - mark | unmark <index>");
+        out.println("    - delete <index>");
         printLine();
     }
 
@@ -41,25 +40,27 @@ public record Ui(PrintStream out) {
         out.println("    " + "Use the following commands:");
         out.println("    - list");
         out.println("    - todo <description>");
-        out.println("    - deadline <description> /by <when>");
-        out.println("    - event <description> /from <start> /to <end>");
-        out.println("    - mark <task-number> | unmark <task-number>");
-        out.println("    - delete <task-number>");
+        out.println("    - deadline <description> /by <date time>");
+        out.println("    - event <description> /from <date time> /to <date time>");
+        out.println("    - mark | unmark <index>");
+        out.println("    - delete <index>");
         printLine();
     }
 
-    public String formatTask(Task t) {
-        String status = t.isDone() ? "[X]" : "[ ]";
-        String type = "[T]";
-        String extra = "";
-        if (t instanceof Deadline d) {
-            type = "[D]";
-            extra = " (by " + d.getBy() + ")";
-        } else if (t instanceof Event e) {
-            type = "[E]";
-            extra = " (from " + e.getFrom() + " to " + e.getTo() + ")";
-        }
-        return type + status + " " + t.getDescription() + extra;
+    public void printDeadlineFormat() {
+        printLine();
+        out.println("    " + "Usage: deadline <description> /by <date time>");
+        out.println("    " + "Example: deadline return book /by 12-3-2025 1800");
+        printLine();
+    }
+
+    public void printEventFormat() {
+        printLine();
+        out.println("    " + "Usage: event <description> /from <date> [time] /to <date> [time]");
+        out.println("    " + "Examples:");
+        out.println("    " + "  event conference /from 9 Aug /to 10 Aug");
+        out.println("    " + "  event project meeting /from 2/12/2025 1800 /to 2/12/2025 2000");
+        printLine();
     }
 
     public void printList(List<Task> items) {
@@ -69,7 +70,7 @@ public record Ui(PrintStream out) {
         } else {
             out.println("    " + "Here are the tasks in your list:");
             for (int i = 0; i < items.size(); i++) {
-                out.println("    " + (i + 1) + ". " + formatTask(items.get(i)));
+                out.println("    " + (i + 1) + ". " + items.get(i).toString());
             }
         }
         printLine();
@@ -78,7 +79,7 @@ public record Ui(PrintStream out) {
     public void printAdded(Task task, int newSize) {
         printLine();
         out.println("    " + "Got it. I've added this task:");
-        out.println("    " + "  " + formatTask(task));
+        out.println("    " + " " + task.toString());
         out.println("    " + "Now you have " + newSize + " task(s) in the list.");
         printLine();
     }
@@ -88,14 +89,14 @@ public record Ui(PrintStream out) {
         out.println(mark
                 ? "    " + "Nice! I've marked this task as done!"
                 : "    " + "Nice! I've marked this task as not done yet!");
-        out.println("    " + formatTask(task));
+        out.println("    " + task.toString());
         printLine();
     }
 
     public void printDelete(Task task, int newSize) {
         printLine();
         out.println("    " + "Noted. I've removed this task:");
-        out.println("    " + "  " + formatTask(task));
+        out.println("    " + " " + task.toString());
         out.println("    " + "Now you have " + newSize + " task(s) in the list.");
         printLine();
     }
