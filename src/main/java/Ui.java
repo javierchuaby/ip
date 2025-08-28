@@ -1,12 +1,7 @@
 import java.io.PrintStream;
 import java.util.List;
 
-public class Ui {
-    private final PrintStream out;
-
-    public Ui(PrintStream out) {
-        this.out = out;
-    }
+public record Ui(PrintStream out) {
 
     public void printLine() {
         out.println("    " + "____________________________________________________________");
@@ -30,8 +25,20 @@ public class Ui {
 
     public void printUnknown(String input) {
         printLine();
-        out.println("    " + "Sorry, I do not understand what " + input +  " means.");
+        out.println("    " + "Sorry, I do not understand what " + input + " means.");
         out.println("    " + "Try one of these:");
+        out.println("    - list");
+        out.println("    - todo <description>");
+        out.println("    - deadline <description> /by <when>");
+        out.println("    - event <description> /from <start> /to <end>");
+        out.println("    - mark <task-number> | unmark <task-number>");
+        out.println("    - delete <task-number>");
+        printLine();
+    }
+
+    public void printUnknownEmpty() {
+        printLine();
+        out.println("    " + "Use the following commands:");
         out.println("    - list");
         out.println("    - todo <description>");
         out.println("    - deadline <description> /by <when>");
@@ -45,8 +52,13 @@ public class Ui {
         String status = t.isDone() ? "[X]" : "[ ]";
         String type = "[T]";
         String extra = "";
-        if (t instanceof Deadline d) { type = "[D]"; extra = " (by " + d.getBy() + ")"; }
-        else if (t instanceof Event e) { type = "[E]"; extra = " (from " + e.getFrom() + " to " + e.getTo() + ")"; }
+        if (t instanceof Deadline d) {
+            type = "[D]";
+            extra = " (by " + d.getBy() + ")";
+        } else if (t instanceof Event e) {
+            type = "[E]";
+            extra = " (from " + e.getFrom() + " to " + e.getTo() + ")";
+        }
         return type + status + " " + t.getDescription() + extra;
     }
 
@@ -57,7 +69,7 @@ public class Ui {
         } else {
             out.println("    " + "Here are the tasks in your list:");
             for (int i = 0; i < items.size(); i++) {
-                out.println("    " + (i+1) + ". " + formatTask(items.get(i)));
+                out.println("    " + (i + 1) + ". " + formatTask(items.get(i)));
             }
         }
         printLine();
