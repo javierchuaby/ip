@@ -1,4 +1,39 @@
 public class Parser {
+
+    public Command parseCommand(String line) {
+        String cmd = getCommandWord(line);
+        String args = getArguments(line);
+
+        return switch (cmd) {
+            case "" -> new EmptyCommand();
+            case "bye" -> new ExitCommand();
+            case "list" -> new ListCommand();
+            case "todo" -> new TodoCommand(args);
+            case "deadline" -> {
+                try {
+                    String[] parts = parseDeadlineArgs(args == null ? "" : args);
+                    yield new DeadlineCommand(parts[0], parts[1]);
+                } catch (IllegalArgumentException ex) {
+                    yield new UnknownCommand(line);
+                }
+            }
+            case "event" -> {
+                try {
+                    String[] parts = parseEventArgs(args == null ? "" : args);
+                    yield new EventCommand(parts[0], parts[1], parts[2]);
+                } catch (IllegalArgumentException ex) {
+                    yield new UnknownCommand(line);
+                }
+            }
+            case "mark" -> new MarkCommand(parseOneBasedIndex(args), true);
+            case "unmark" -> new MarkCommand(parseOneBasedIndex(args), false);
+            case "delete" -> new DeleteCommand(parseOneBasedIndex(args));
+            case "on" -> new AgendaCommand(args);
+            case "clear" -> new ClearCommand();
+            default -> new UnknownCommand(line);
+        };
+    }
+
     public String getCommandWord(String line) {
         String s = line.trim();
         int sp = s.indexOf(' ');
@@ -29,5 +64,16 @@ public class Parser {
         String toRaw = args.substring(j + 3).trim();
         if (desc.isEmpty() || fromRaw.isEmpty() || toRaw.isEmpty()) throw new IllegalArgumentException("Usage");
         return new String[]{desc, fromRaw, toRaw};
+    }
+
+    private int parseOneBasedIndex(String args) {
+        if (args == null) return -1;
+        String s = args.trim();
+        if (s.isEmpty()) return -1;
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

@@ -4,5 +4,7 @@ public class Todo extends Task {
     }
 
     @Override
-    protected String typeTag() { return "T"; }
+    public String toString() {
+        return "[T] [" + getStatusIcon() + "] " + description;
+    }
 }

@@ -4,12 +4,12 @@ import java.time.LocalDate;
 
 public record Ui(PrintStream out) {
     public void printLine() {
-        out.println("    " + "____________________________________________________________");
+        out.println("    " + "__________________________________________________");
     }
 
     public void printWelcome() {
         printLine();
-        out.println("    Hello! I'm Mr Moon");
+        out.println("    Hello! I'm Mr Moon!");
         out.println("    What can I do for you?");
         printLine();
     }

@@ -9,14 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
-    private final Path dataDir = Paths.get("data");
-    private final Path dataFile = dataDir.resolve("duke.txt");
+    private final Path dataFile;
+    private final Path dataDir;
+
+    public Storage(String filePath) {
+        this.dataFile = Paths.get(filePath);
+        Path parent = dataFile.getParent();
+        this.dataDir = (parent != null) ? parent : Paths.get(".");
+    }
+
+    public Storage() {
+        this("data/duke.txt");
+    }
 
     public List<Task> load() {
         ensureDataDir();
         if (!Files.exists(dataFile)) {
             return new ArrayList<>();
         }
+
         try {
             List<String> lines = Files.readAllLines(dataFile, StandardCharsets.UTF_8);
             List<Task> tasks = new ArrayList<>();
@@ -34,7 +45,7 @@ public class Storage {
 
     public void save(List<Task> tasks) {
         ensureDataDir();
-        Path tmp = dataDir.resolve("duke.txt.tmp");
+        Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
         try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Task t : tasks) {
@@ -45,6 +56,7 @@ public class Storage {
             System.err.println("[WARN] Failed to save tasks: " + ioe.getMessage());
             return;
         }
+
         try {
             Files.move(tmp, dataFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException ioe) {
@@ -84,10 +96,12 @@ public class Storage {
         if (parts.length < 3) {
             throw new IllegalArgumentException("Malformed line: " + line);
         }
+
         String type = parts[0].trim();
         boolean done = "1".equals(parts[1].trim());
         String desc = parts[2];
         Task t;
+
         switch (type) {
             case "T":
                 t = new Todo(desc);
@@ -110,8 +124,7 @@ public class Storage {
             case "E": {
                 if (parts.length < 5) throw new IllegalArgumentException("Missing event dates: " + line);
                 String fromRaw = parts[3].trim();
-                String toRaw   = parts[4].trim();
-
+                String toRaw = parts[4].trim();
                 LocalDateTime from, to;
                 boolean fromHasTime, toHasTime;
 
@@ -137,6 +150,7 @@ public class Storage {
             default:
                 throw new IllegalArgumentException("Unknown task type: " + type);
         }
+
         if (done) t.mark();
         return t;
     }
@@ -144,7 +158,7 @@ public class Storage {
     private void backupCorruptFile(Exception ex) {
         try {
             String suffix = ".corrupt-" + System.currentTimeMillis();
-            Path backup = dataDir.resolve("duke.txt" + suffix);
+            Path backup = dataDir.resolve(dataFile.getFileName() + suffix);
             Files.move(dataFile, backup, StandardCopyOption.REPLACE_EXISTING);
             System.err.println("[WARN] Data file appears corrupted: " + ex.getClass().getSimpleName()
                     + ". Backed up to " + backup);

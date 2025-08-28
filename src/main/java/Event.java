@@ -6,45 +6,36 @@ public class Event extends Task {
     private final boolean fromHasTime;
     private final boolean toHasTime;
 
-    public Event(String description, String fromInput, String toInput) {
-        super(description);
-        var rf = DateTimeUtil.parseLenientResult(fromInput);
-        var rt = DateTimeUtil.parseLenientResult(toInput);
-        if (rt.dt.isBefore(rf.dt)) {
-            throw new IllegalArgumentException("The /to date/time must be on or after the /from date/time.");
-        }
-        this.from = rf.dt;
-        this.to = rt.dt;
-        this.fromHasTime = rf.hasTime;
-        this.toHasTime = rt.hasTime;
-    }
-
     public Event(String description, LocalDateTime from, boolean fromHasTime,
                  LocalDateTime to, boolean toHasTime) {
         super(description);
-        if (to.isBefore(from)) {
-            throw new IllegalArgumentException("The /to date/time must be on or after the /from date/time.");
-        }
         this.from = from;
         this.to = to;
         this.fromHasTime = fromHasTime;
         this.toHasTime = toHasTime;
     }
 
-    @Override
-    protected String typeTag() { return "E"; }
+    public Event(String description, String fromString, String toString) {
+        super(description);
+        DateTimeUtil.ParseResult fromResult = DateTimeUtil.parseLenientResult(fromString);
+        DateTimeUtil.ParseResult toResult = DateTimeUtil.parseLenientResult(toString);
 
-    @Override
-    protected String extra() {
-        return " (from: " + DateTimeUtil.toPrettyString(from, fromHasTime)
-                + ", to: "   + DateTimeUtil.toPrettyString(to,   toHasTime) + ")";
+        this.from = fromResult.dt;
+        this.to = toResult.dt;
+        this.fromHasTime = fromResult.hasTime;
+        this.toHasTime = toResult.hasTime;
     }
 
-    public java.time.LocalDateTime getFromDateTime() { return this.from; }
-    public java.time.LocalDateTime getToDateTime()   { return this.to; }
-    public boolean fromHasTime() { return this.fromHasTime; }
-    public boolean toHasTime()   { return this.toHasTime; }
+    public LocalDateTime getFromDateTime() { return from; }
+    public LocalDateTime getToDateTime() { return to; }
+    public String getFrom() { return DateTimeUtil.toStorageString(from, fromHasTime); }
+    public String getTo() { return DateTimeUtil.toStorageString(to, toHasTime); }
 
-    public String getFrom() { return DateTimeUtil.toStorageString(this.from, this.fromHasTime); }
-    public String getTo()   { return DateTimeUtil.toStorageString(this.to,   this.toHasTime); }
+    @Override
+    public String toString() {
+        String fromStr = DateTimeUtil.toPrettyString(from, fromHasTime);
+        String toStr = DateTimeUtil.toPrettyString(to, toHasTime);
+        return "[E] [" + getStatusIcon() + "] " + description +
+                " (from: " + fromStr + ", to: " + toStr + ")";
+    }
 }

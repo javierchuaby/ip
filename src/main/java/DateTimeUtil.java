@@ -13,7 +13,7 @@ public final class DateTimeUtil {
     private static final DateTimeFormatter STORAGE_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter STORAGE_DATETIME = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     private static final DateTimeFormatter PRETTY_DATE = DateTimeFormatter.ofPattern("d MMM yyyy");
-    private static final DateTimeFormatter PRETTY_DATETIME = DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a");
+    private static final DateTimeFormatter PRETTY_DATETIME = DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a").withLocale(Locale.ENGLISH);
 
     private static final List<DateTimeFormatter> DATE_PATTERNS = List.of(
             DateTimeFormatter.ISO_LOCAL_DATE,
