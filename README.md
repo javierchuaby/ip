@@ -24,3 +24,16 @@ Prerequisites: JDK 17, update Intellij to the most recent version.
    ```
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+
+
+## Installation
+
+### Download and Run
+1. Go to [Releases](https://github.com/yourusername/yourrepo/releases)
+2. Download the latest `duke.jar` file
+3. Place it in an empty folder
+4. Open terminal in that folder
+5. Run: `java -jar "duke.jar"`
+
+### Requirements
+- Java 11 or higher
