@@ -1,3 +1,10 @@
+package duke.storage;
+
+import duke.task.Deadline;
+import duke.task.Event;
+import duke.task.Task;
+import duke.task.Todo;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -148,7 +155,7 @@ public class Storage {
                 break;
             }
             default:
-                throw new IllegalArgumentException("Unknown task type: " + type);
+                throw new IllegalArgumentException("Unknown duke.task type: " + type);
         }
 
         if (done) t.mark();

@@ -1,3 +1,8 @@
+package duke.ui;
+
+import duke.task.Task;
+import duke.task.TaskList;
+
 import java.io.PrintStream;
 import java.util.List;
 import java.time.LocalDate;
@@ -73,7 +78,7 @@ public record Ui(PrintStream out) {
         int i = 1;
         for (Task t : items) {
             // Optional: show the original index from the full list (nice UX)
-            int originalIdx = fullList.indexOf(t) + 1; // TaskList should expose indexOf; if not, loop to find
+            int originalIdx = fullList.indexOf(t) + 1; // task.TaskList should expose indexOf; if not, loop to find
             out.println("    " + i + ". " + t.toString() + "    [#"+ originalIdx + " in main list]");
             i++;
         }
@@ -111,26 +116,26 @@ public record Ui(PrintStream out) {
 
     public void printAdded(Task task, int newSize) {
         printLine();
-        out.println("    " + "Got it. I've added this task:");
+        out.println("    " + "Got it. I've added this duke.task:");
         out.println("    " + " " + task.toString());
-        out.println("    " + "Now you have " + newSize + " task(s) in the list.");
+        out.println("    " + "Now you have " + newSize + " duke.task(s) in the list.");
         printLine();
     }
 
     public void printMarked(Task task, boolean mark) {
         printLine();
         out.println(mark
-                ? "    " + "Nice! I've marked this task as done!"
-                : "    " + "Nice! I've marked this task as not done yet!");
+                ? "    " + "Nice! I've marked this duke.task as done!"
+                : "    " + "Nice! I've marked this duke.task as not done yet!");
         out.println("    " + task.toString());
         printLine();
     }
 
     public void printDelete(Task task, int newSize) {
         printLine();
-        out.println("    " + "Noted. I've removed this task:");
+        out.println("    " + "Noted. I've removed this duke.task:");
         out.println("    " + " " + task.toString());
-        out.println("    " + "Now you have " + newSize + " task(s) in the list.");
+        out.println("    " + "Now you have " + newSize + " duke.task(s) in the list.");
         printLine();
     }
 

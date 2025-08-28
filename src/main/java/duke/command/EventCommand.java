@@ -1,3 +1,9 @@
+package duke.command;
+
+import duke.task.Event;
+import duke.task.TaskList;
+import duke.ui.Ui;
+
 public class EventCommand implements Command {
     private final String description;
     private final String fromInput;

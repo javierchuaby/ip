@@ -1,3 +1,8 @@
+package duke.command;
+
+import duke.task.TaskList;
+import duke.ui.Ui;
+
 public class UnknownCommand implements Command {
     private final String input;
     public UnknownCommand(String input) {

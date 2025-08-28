@@ -1,3 +1,13 @@
+package duke;
+
+import duke.command.ClearCommand;
+import duke.task.TaskList;
+import duke.task.Task;
+import duke.storage.Storage;
+import duke.ui.Ui;
+import duke.parser.Parser;
+import duke.command.Command;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,7 +62,7 @@ public class MrMoon {
                 try {
                     command = parser.parseCommand(line);
                 } catch (Exception e) {
-                    ui.printUsage("Error parsing command: " + e.getMessage());
+                    ui.printUsage("Error parsing duke.command: " + e.getMessage());
                     continue;
                 }
 

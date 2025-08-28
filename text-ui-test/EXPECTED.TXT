@@ -6,19 +6,19 @@
     You have no tasks in your list!
     __________________________________________________
     __________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this duke.task:
      [T] [ ] read book
-    Now you have 1 task(s) in the list.
+    Now you have 1 duke.task(s) in the list.
     __________________________________________________
     __________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this duke.task:
      [D] [ ] return book (by: 12 Mar 2025, 6:00 PM)
-    Now you have 2 task(s) in the list.
+    Now you have 2 duke.task(s) in the list.
     __________________________________________________
     __________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this duke.task:
      [E] [ ] conference (from: 9 Aug 2025, to: 10 Aug 2025)
-    Now you have 3 task(s) in the list.
+    Now you have 3 duke.task(s) in the list.
     __________________________________________________
     __________________________________________________
     Here are the tasks in your list:
@@ -27,17 +27,17 @@
     3. [E] [ ] conference (from: 9 Aug 2025, to: 10 Aug 2025)
     __________________________________________________
     __________________________________________________
-    Nice! I've marked this task as done!
+    Nice! I've marked this duke.task as done!
     [T] [X] read book
     __________________________________________________
     __________________________________________________
-    Nice! I've marked this task as not done yet!
+    Nice! I've marked this duke.task as not done yet!
     [T] [ ] read book
     __________________________________________________
     __________________________________________________
-    Noted. I've removed this task:
+    Noted. I've removed this duke.task:
      [T] [ ] read book
-    Now you have 2 task(s) in the list.
+    Now you have 2 duke.task(s) in the list.
     __________________________________________________
     __________________________________________________
     Here are the tasks in your list:
