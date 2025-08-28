@@ -2,17 +2,19 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
-    private final Path dataDir = Paths.get("data");                 // ./data (relative, OS-independent)
-    private final Path dataFile = dataDir.resolve("duke.txt");      // ./data/duke.txt
+    private final Path dataDir = Paths.get("data");
+    private final Path dataFile = dataDir.resolve("duke.txt");
 
     public List<Task> load() {
         ensureDataDir();
         if (!Files.exists(dataFile)) {
-            // First run: nothing to load — return empty list.
             return new ArrayList<>();
         }
         try {
@@ -25,7 +27,6 @@ public class Storage {
             }
             return tasks;
         } catch (Exception ex) {
-            // Stretch goal: file corrupted → back it up and start clean.
             backupCorruptFile(ex);
             return new ArrayList<>();
         }
@@ -33,7 +34,6 @@ public class Storage {
 
     public void save(List<Task> tasks) {
         ensureDataDir();
-        // Write to a temp file and then move atomically to avoid partial writes.
         Path tmp = dataDir.resolve("duke.txt.tmp");
         try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
@@ -42,14 +42,17 @@ public class Storage {
                 w.newLine();
             }
         } catch (IOException ioe) {
-            // If save fails, we surface but do not crash the app.
             System.err.println("[WARN] Failed to save tasks: " + ioe.getMessage());
             return;
         }
         try {
             Files.move(tmp, dataFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException ioe) {
-            System.err.println("[WARN] Failed to finalise save: " + ioe.getMessage());
+            try {
+                Files.move(tmp, dataFile, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ioe2) {
+                System.err.println("[WARN] Failed to finalise save: " + ioe2.getMessage());
+            }
         }
     }
 
@@ -63,61 +66,74 @@ public class Storage {
         }
     }
 
-    // ----- Serialisation format -----
-    // T | 1 | read book
-    // D | 0 | return book | 2025-06-06
-    // E | 0 | project meeting | 2025-08-06T14:00/2025-08-06T16:00
-    // (Keep UI output unchanged; this is only the file format.)
     private String encode(Task t) {
         String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
-            return String.join(" | ", "T", done, t.getDescription());
-        } else if (t instanceof Deadline) {
-            Deadline d = (Deadline) t;
-            return String.join(" | ", "D", done, d.getDescription(), d.getBy()); // keep raw text you already accept
-        } else if (t instanceof Event) {
-            Event e = (Event) t;
-            return String.join(" | ", "E", done, e.getDescription(), e.getFrom() + " | " + e.getTo()); // keep raw text you already accept
+            return String.join("\t", "T", done, t.getDescription());
+        } else if (t instanceof Deadline d) {
+            return String.join("\t", "D", done, d.getDescription(), d.getBy());
+        } else if (t instanceof Event e) {
+            return String.join("\t", "E", done, e.getDescription(), e.getFrom(), e.getTo());
         } else {
-            // Fallback to plain task
-            return String.join(" | ", "T", done, t.getDescription());
+            return String.join("\t", "T", done, t.getDescription());
         }
     }
 
     private Task parseLine(String line) {
-        // Split exactly on " | " to tolerate spaces in description.
-        String[] parts = line.split("\\s\\|\\s");
+        String[] parts = line.split("\t");
         if (parts.length < 3) {
             throw new IllegalArgumentException("Malformed line: " + line);
         }
         String type = parts[0].trim();
         boolean done = "1".equals(parts[1].trim());
         String desc = parts[2];
-
         Task t;
         switch (type) {
             case "T":
                 t = new Todo(desc);
                 break;
-            case "D":
+            case "D": {
                 if (parts.length < 4) throw new IllegalArgumentException("Missing deadline date: " + line);
-                // Use the same parser logic your app already uses (raw string preserved)
-                t = new Deadline(desc, parts[3]);
-                break;
-            case "E":
-                if (parts.length >= 5) {
-                    t = new Event(desc, parts[3], parts[4]);
-                } else if (parts.length == 4) {
-                    String raw = parts[3];
-                    int slash = raw.indexOf('/');
-                    if (slash == -1) throw new IllegalArgumentException("Missing event end time: " + line);
-                    String from = raw.substring(0, slash).trim();
-                    String to = raw.substring(slash + 1).trim();
-                    t = new Event(desc, from, to);
+                String byRaw = parts[3].trim();
+                LocalDateTime by;
+                boolean hasTime;
+                if (byRaw.contains("T")) {
+                    by = LocalDateTime.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                    hasTime = true;
                 } else {
-                    throw new IllegalArgumentException("Missing event time: " + line);
+                    by = LocalDate.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                    hasTime = false;
                 }
+                t = new Deadline(desc, by, hasTime);
                 break;
+            }
+            case "E": {
+                if (parts.length < 5) throw new IllegalArgumentException("Missing event dates: " + line);
+                String fromRaw = parts[3].trim();
+                String toRaw   = parts[4].trim();
+
+                LocalDateTime from, to;
+                boolean fromHasTime, toHasTime;
+
+                if (fromRaw.contains("T")) {
+                    from = LocalDateTime.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                    fromHasTime = true;
+                } else {
+                    from = LocalDate.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                    fromHasTime = false;
+                }
+
+                if (toRaw.contains("T")) {
+                    to = LocalDateTime.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                    toHasTime = true;
+                } else {
+                    to = LocalDate.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                    toHasTime = false;
+                }
+
+                t = new Event(desc, from, fromHasTime, to, toHasTime);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown task type: " + type);
         }
