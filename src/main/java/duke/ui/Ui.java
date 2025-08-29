@@ -39,6 +39,7 @@ public record Ui(PrintStream out) {
     out.println("    - delete <index>");
     out.println("    - on <date>");
     out.println("    - clear (clear all tasks in list)");
+    out.println("    - find <keyword>");
     printLine();
   }
 
@@ -53,6 +54,7 @@ public record Ui(PrintStream out) {
     out.println("    - delete <index>");
     out.println("    - on <date>");
     out.println("    - clear (clear all tasks in list)");
+    out.println("    - find <keyword>");
     printLine();
   }
 
@@ -179,4 +181,26 @@ public record Ui(PrintStream out) {
     out.println("    " + "lol gay");
     printLine();
   }
+
+    /**
+     * Prints the results of a find operation.
+     * Shows all matching tasks with their indices from the main list.
+     *
+     * @param keyword The keyword that was searched for
+     * @param matches The list of tasks that matched the keyword
+     */
+    public void printFindResults(String keyword, List<Task> matches) {
+        printLine();
+        out.println("    Here are the matching tasks in your list for '" + keyword + "':");
+
+        if (matches.isEmpty()) {
+            out.println("    (no matching tasks found)");
+        } else {
+            for (int i = 0; i < matches.size(); i++) {
+                out.println("    " + (i + 1) + ". " + matches.get(i).toString());
+            }
+        }
+
+        printLine();
+    }
 }
