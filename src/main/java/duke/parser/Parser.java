@@ -46,6 +46,7 @@ public class Parser {
             case "delete" -> new DeleteCommand(parseOneBasedIndex(args));
             case "on" -> new AgendaCommand(args);
             case "clear" -> new ClearCommand();
+            case "find" -> new FindCommand(args);
             default -> new UnknownCommand(line);
         };
     }
