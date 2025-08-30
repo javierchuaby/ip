@@ -20,35 +20,44 @@ public class Parser {
         String cmd = getCommandWord(line);
         String args = getArguments(line);
 
-        return switch (cmd) {
-            case "" -> new EmptyCommand();
-            case "bye" -> new ExitCommand();
-            case "list" -> new ListCommand();
-            case "todo" -> new TodoCommand(args);
-            case "deadline" -> {
-                try {
-                    String[] parts = parseDeadlineArgs(args == null ? "" : args);
-                    yield new DeadlineCommand(parts[0], parts[1]);
-                } catch (IllegalArgumentException ex) {
-                    yield new UnknownCommand(line);
-                }
+        switch (cmd) {
+        case "":
+            return new EmptyCommand();
+        case "bye":
+            return new ExitCommand();
+        case "list":
+            return new ListCommand();
+        case "todo":
+            return new TodoCommand(args);
+        case "deadline":
+            try {
+                String[] parts = parseDeadlineArgs(args == null ? "" : args);
+                return new DeadlineCommand(parts[0], parts[1]);
+            } catch (IllegalArgumentException ex) {
+                return new UnknownCommand(line);
             }
-            case "event" -> {
-                try {
-                    String[] parts = parseEventArgs(args == null ? "" : args);
-                    yield new EventCommand(parts[0], parts[1], parts[2]);
-                } catch (IllegalArgumentException ex) {
-                    yield new UnknownCommand(line);
-                }
+        case "event":
+            try {
+                String[] parts = parseEventArgs(args == null ? "" : args);
+                return new EventCommand(parts[0], parts[1], parts[2]);
+            } catch (IllegalArgumentException ex) {
+                return new UnknownCommand(line);
             }
-            case "mark" -> new MarkCommand(parseOneBasedIndex(args), true);
-            case "unmark" -> new MarkCommand(parseOneBasedIndex(args), false);
-            case "delete" -> new DeleteCommand(parseOneBasedIndex(args));
-            case "on" -> new AgendaCommand(args);
-            case "clear" -> new ClearCommand();
-            case "find" -> new FindCommand(args);
-            default -> new UnknownCommand(line);
-        };
+        case "mark":
+            return new MarkCommand(parseOneBasedIndex(args), true);
+        case "unmark":
+            return new MarkCommand(parseOneBasedIndex(args), false);
+        case "delete":
+            return new DeleteCommand(parseOneBasedIndex(args));
+        case "on":
+            return new AgendaCommand(args);
+        case "clear":
+            return new ClearCommand();
+        case "find":
+            return new FindCommand(args);
+        default:
+            return new UnknownCommand(line);
+        }
     }
 
     /**
