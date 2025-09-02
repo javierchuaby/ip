@@ -1,7 +1,8 @@
 package duke.task;
 
-import duke.util.DateTimeUtil;
 import java.time.LocalDateTime;
+
+import duke.util.DateTimeUtil;
 
 /**
  * Represents a deadline task with a due date and time.
@@ -10,18 +11,22 @@ import java.time.LocalDateTime;
  */
 public class Deadline extends Task {
 
-    /** The due date and time for this deadline */
+    /**
+     * The due date and time for this deadline
+     */
     private final LocalDateTime by;
 
-    /** Whether the due time includes a specific time component */
+    /**
+     * Whether the due time includes a specific time component
+     */
     private final boolean hasTime;
 
     /**
      * Constructs a Deadline task with specified description and due date/time.
      *
      * @param description The task description
-     * @param by The due date and time as LocalDateTime
-     * @param hasTime true if the due date includes a specific time, false for date only
+     * @param by          The due date and time as LocalDateTime
+     * @param hasTime     true if the due date includes a specific time, false for date only
      */
     public Deadline(String description, LocalDateTime by, boolean hasTime) {
         super(description);
@@ -34,7 +39,7 @@ public class Deadline extends Task {
      * Uses DateTimeUtil to parse flexible date/time formats.
      *
      * @param description The task description
-     * @param byString The due date/time as a string to be parsed
+     * @param byString    The due date/time as a string to be parsed
      * @throws IllegalArgumentException if the date/time string cannot be parsed
      */
     public Deadline(String description, String byString) {

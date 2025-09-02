@@ -1,16 +1,19 @@
 package duke.command;
 
+import java.util.List;
+
 import duke.task.Task;
 import duke.task.TaskList;
 import duke.ui.Ui;
-import java.util.List;
 
 /**
  * Represents a command to find tasks that contain a specific keyword in their description.
  * Shows all matching tasks as a numbered list.
  */
 public class FindCommand implements Command {
-    /** The keyword to search for in task descriptions */
+    /**
+     * The keyword to search for in task descriptions
+     */
     private final String keyword;
 
     /**
@@ -27,7 +30,7 @@ public class FindCommand implements Command {
      * If the keyword is empty, shows usage information.
      *
      * @param tasks The task list to search through
-     * @param ui The user interface for displaying results
+     * @param ui    The user interface for displaying results
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

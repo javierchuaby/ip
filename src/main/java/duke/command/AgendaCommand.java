@@ -10,7 +10,9 @@ import duke.util.DateTimeUtil;
  */
 public class AgendaCommand implements Command {
 
-    /** The date input string provided by the user */
+    /**
+     * The date input string provided by the user
+     */
     private final String dateInput;
 
     /**
@@ -27,13 +29,13 @@ public class AgendaCommand implements Command {
      * If the date input is invalid or empty, shows usage information.
      *
      * @param tasks The task list to search through
-     * @param ui The user interface for displaying results
+     * @param ui    The user interface for displaying results
      */
     @Override
-        public void execute(TaskList tasks, Ui ui) {
-            if (dateInput == null || dateInput.trim().isEmpty()) {
-              ui.printAgendaFormat();
-              return;
+    public void execute(TaskList tasks, Ui ui) {
+        if (dateInput == null || dateInput.trim().isEmpty()) {
+            ui.printAgendaFormat();
+            return;
         }
 
         try {

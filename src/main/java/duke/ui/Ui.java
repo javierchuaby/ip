@@ -1,10 +1,11 @@
 package duke.ui;
 
-import duke.task.Task;
-import duke.task.TaskList;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.util.List;
+
+import duke.task.Task;
+import duke.task.TaskList;
 
 /**
  * User Interface component handling console input/output operations.
@@ -99,8 +100,8 @@ public record Ui(PrintStream out) {
      * Prints the agenda (list of tasks) for a specific date.
      * Shows task indices from the main list for user reference.
      *
-     * @param date The date to display tasks for
-     * @param items The list of tasks occurring on the specified date
+     * @param date     The date to display tasks for
+     * @param items    The list of tasks occurring on the specified date
      * @param fullList The complete task list for index reference
      */
     public void printAgendaForDate(LocalDate date, List<Task> items, TaskList fullList) {
@@ -166,7 +167,7 @@ public record Ui(PrintStream out) {
     /**
      * Prints confirmation that a task has been successfully added.
      *
-     * @param task The task that was added
+     * @param task    The task that was added
      * @param newSize The total number of tasks after addition
      */
     public void printAdded(Task task, int newSize) {
@@ -195,7 +196,7 @@ public record Ui(PrintStream out) {
     /**
      * Prints confirmation that a task has been deleted.
      *
-     * @param task The task that was deleted
+     * @param task    The task that was deleted
      * @param newSize The number of remaining tasks after deletion
      */
     public void printDelete(Task task, int newSize) {

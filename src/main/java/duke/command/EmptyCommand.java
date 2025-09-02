@@ -12,7 +12,7 @@ public class EmptyCommand implements Command {
      * Executes the empty command by displaying an unknown empty input message.
      *
      * @param tasks The task list (not used in this command)
-     * @param ui The user interface for displaying the message
+     * @param ui    The user interface for displaying the message
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

@@ -1,9 +1,11 @@
 package duke.task;
 
-import duke.storage.Storage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import duke.storage.Storage;
+
 
 /**
  * Represents the collection of tasks in the Duke application.
@@ -12,10 +14,14 @@ import java.util.List;
  */
 public class TaskList {
 
-    /** The list of tasks managed by this TaskList */
+    /**
+     * The list of tasks managed by this TaskList
+     */
     private final List<Task> tasks = new ArrayList<>();
 
-    /** The storage system for persisting tasks */
+    /**
+     * The storage system for persisting tasks
+     */
     private final Storage storage;
 
     /**
@@ -26,7 +32,9 @@ public class TaskList {
      */
     public TaskList(Storage storage, List<Task> initial) {
         this.storage = storage;
-        if (initial != null) tasks.addAll(initial);
+        if (initial != null) {
+            tasks.addAll(initial);
+        }
     }
 
     /**
@@ -113,7 +121,9 @@ public class TaskList {
      */
     public int indexOf(Task t) {
         for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i) == t) return i;
+            if (tasks.get(i) == t) {
+                return i;
+            }
         }
         return -1;
     }

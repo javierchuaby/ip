@@ -10,10 +10,14 @@ package duke.task;
  */
 public abstract class Task {
 
-    /** The description of the task */
+    /**
+     * The description of the task
+     */
     protected String description;
 
-    /** Whether the task is marked as completed */
+    /**
+     * Whether the task is marked as completed
+     */
     protected boolean isDone;
 
     /**

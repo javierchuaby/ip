@@ -12,7 +12,7 @@ public class ListCommand implements Command {
      * Executes the list command by displaying all tasks in the task list.
      *
      * @param tasks The task list to display
-     * @param ui The user interface for displaying the task list
+     * @param ui    The user interface for displaying the task list
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

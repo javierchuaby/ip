@@ -10,13 +10,19 @@ import duke.ui.Ui;
  */
 public class DeadlineCommand implements Command {
 
-    /** The description of the deadline task */
+    /**
+     * The description of the deadline task
+     */
     private final String description;
 
-    /** The due date/time input string */
+    /**
+     * The due date/time input string
+     */
     private final String byInput;
 
-    /** The due date/time input string */
+    /**
+     * The due date/time input string
+     */
     public DeadlineCommand(String description, String byInput) {
         this.description = description;
         this.byInput = byInput;
@@ -27,7 +33,7 @@ public class DeadlineCommand implements Command {
      * If the description is empty or the date format is invalid, shows appropriate error messages.
      *
      * @param tasks The task list to add the deadline to
-     * @param ui The user interface for displaying results and errors
+     * @param ui    The user interface for displaying results and errors
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

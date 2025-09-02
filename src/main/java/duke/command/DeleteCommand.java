@@ -9,7 +9,9 @@ import duke.ui.Ui;
  * The task is permanently removed from the list.
  */
 public class DeleteCommand implements Command {
-    /** The 1-based index of the task to delete */
+    /**
+     * The 1-based index of the task to delete
+     */
     private final int index;
 
     /**
@@ -26,14 +28,14 @@ public class DeleteCommand implements Command {
      * If the index is out of bounds, shows an error message.
      *
      * @param tasks The task list to remove the task from
-     * @param ui The user interface for displaying results and errors
+     * @param ui    The user interface for displaying results and errors
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {
         if (index < 1 || index > tasks.size()) {
-        ui.printUsage("Please use a duke.task number between 1 and " + tasks.size() + ".");
-        return;
-    }
+            ui.printUsage("Please use a duke.task number between 1 and " + tasks.size() + ".");
+            return;
+        }
         Task removed = tasks.remove(index - 1);
         ui.printDelete(removed, tasks.size());
     }

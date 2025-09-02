@@ -1,6 +1,18 @@
 package duke.parser;
 
-import duke.command.*;
+import duke.command.AgendaCommand;
+import duke.command.ClearCommand;
+import duke.command.Command;
+import duke.command.DeadlineCommand;
+import duke.command.DeleteCommand;
+import duke.command.EmptyCommand;
+import duke.command.EventCommand;
+import duke.command.ExitCommand;
+import duke.command.FindCommand;
+import duke.command.ListCommand;
+import duke.command.MarkCommand;
+import duke.command.TodoCommand;
+import duke.command.UnknownCommand;
 
 /**
  * Parses user input strings into Command objects.
@@ -94,13 +106,18 @@ public class Parser {
      */
     public String[] parseDeadlineArgs(String args) {
         int i = args.lastIndexOf("/by");
-        if (i < 0) throw new IllegalArgumentException("Missing /by");
+        if (i < 0) {
+            throw new IllegalArgumentException("Missing /by");
+        }
 
         String desc = args.substring(0, i).trim();
         String byRaw = args.substring(i + 3).trim();
 
-        if (desc.isEmpty() || byRaw.isEmpty()) throw new IllegalArgumentException("Usage");
-        return new String[] {desc, byRaw};
+        if (desc.isEmpty() || byRaw.isEmpty()) {
+            throw new IllegalArgumentException("Usage");
+        }
+
+        return new String[]{desc, byRaw};
     }
 
     /**
@@ -115,16 +132,19 @@ public class Parser {
         int i = args.lastIndexOf("/from");
         int j = args.lastIndexOf("/to");
 
-        if (i < 0 || j < 0 || i >= j) throw new IllegalArgumentException("Missing /from or /to");
+        if (i < 0 || j < 0 || i >= j) {
+            throw new IllegalArgumentException("Missing /from or /to");
+        }
 
         String desc = args.substring(0, i).trim();
         String fromRaw = args.substring(i + 5, j).trim();
         String toRaw = args.substring(j + 3).trim();
 
-        if (desc.isEmpty() || fromRaw.isEmpty() || toRaw.isEmpty())
+        if (desc.isEmpty() || fromRaw.isEmpty() || toRaw.isEmpty()) {
             throw new IllegalArgumentException("Usage");
+        }
 
-        return new String[] {desc, fromRaw, toRaw};
+        return new String[]{desc, fromRaw, toRaw};
     }
 
     /**
@@ -135,9 +155,13 @@ public class Parser {
      * @return The parsed one-based index, or -1 if invalid
      */
     private int parseOneBasedIndex(String args) {
-        if (args == null) return -1;
+        if (args == null) {
+            return -1;
+        }
         String s = args.trim();
-        if (s.isEmpty()) return -1;
+        if (s.isEmpty()) {
+            return -1;
+        }
 
         try {
             return Integer.parseInt(s);

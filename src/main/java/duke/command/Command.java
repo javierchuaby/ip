@@ -16,7 +16,7 @@ public interface Command {
      * Executes the command with the given task list and user interface.
      *
      * @param tasks The task list to operate on
-     * @param ui The user interface for output and interaction
+     * @param ui    The user interface for output and interaction
      */
     void execute(TaskList tasks, Ui ui);
 

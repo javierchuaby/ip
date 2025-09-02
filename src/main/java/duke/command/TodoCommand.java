@@ -11,7 +11,9 @@ import duke.ui.Ui;
  */
 public class TodoCommand implements Command {
 
-    /** The description of the todo task */
+    /**
+     * The description of the todo task
+     */
     private final String description;
 
     /**
@@ -28,7 +30,7 @@ public class TodoCommand implements Command {
      * If the description is empty, shows usage information.
      *
      * @param tasks The task list to add the todo to
-     * @param ui The user interface for displaying results and errors
+     * @param ui    The user interface for displaying results and errors
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

@@ -14,15 +14,15 @@ public class ClearCommand implements Command {
      * If no tasks exist, informs the user that there are no tasks to clear.
      *
      * @param tasks The task list to potentially clear
-     * @param ui The user interface for displaying prompts and messages
+     * @param ui    The user interface for displaying prompts and messages
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {
         if (tasks.size() == 0) {
             ui.printNoTasksToClear();
-        return;
-    }
+            return;
+        }
 
-    ui.printClearPrompt();
+        ui.printClearPrompt();
     }
 }

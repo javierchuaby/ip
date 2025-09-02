@@ -8,7 +8,9 @@ import duke.ui.Ui;
  * Displays an error message with the invalid input.
  */
 public class UnknownCommand implements Command {
-    /** The unrecognized input string */
+    /**
+     * The unrecognized input string
+     */
     private final String input;
 
     /**
@@ -24,7 +26,7 @@ public class UnknownCommand implements Command {
      * Executes the unknown command by displaying an error message.
      *
      * @param tasks The task list (not used in this command)
-     * @param ui The user interface for displaying the error message
+     * @param ui    The user interface for displaying the error message
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

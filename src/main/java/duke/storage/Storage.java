@@ -1,18 +1,24 @@
 package duke.storage;
 
-import duke.task.Deadline;
-import duke.task.Event;
-import duke.task.Task;
-import duke.task.Todo;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import duke.task.Deadline;
+import duke.task.Event;
+import duke.task.Task;
+import duke.task.Todo;
+
 
 /**
  * Handles persistent storage of tasks to and from the file system.
@@ -21,10 +27,14 @@ import java.util.List;
  */
 public class Storage {
 
-    /** The path to the data storage file */
+    /**
+     * The path to the data storage file
+     */
     private final Path dataFile;
 
-    /** The directory containing the data file */
+    /**
+     * The directory containing the data file
+     */
     private final Path dataDir;
 
     /**
@@ -64,7 +74,9 @@ public class Storage {
             List<Task> tasks = new ArrayList<>();
 
             for (String line : lines) {
-                if (line == null || line.isBlank()) continue;
+                if (line == null || line.isBlank()) {
+                    continue;
+                }
                 Task t = parseLine(line);
                 tasks.add(t);
             }
@@ -86,9 +98,7 @@ public class Storage {
         ensureDataDir();
         Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
 
-        try (BufferedWriter w = Files.newBufferedWriter(tmp,
-                StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE,
+        try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING)) {
 
             for (Task t : tasks) {
@@ -168,61 +178,69 @@ public class Storage {
         Task t;
 
         switch (type) {
-            case "T":
-                t = new Todo(desc);
-                break;
+        case "T":
+            t = new Todo(desc);
+            break;
 
-            case "D":
-                if (parts.length < 4)
-                    throw new IllegalArgumentException("Missing deadline date: " + line);
+        case "D":
+            if (parts.length < 4) {
+                throw new IllegalArgumentException("Missing deadline date: " + line);
+            }
 
-                String byRaw = parts[3].trim();
-                LocalDateTime by;
-                boolean hasTime;
+            String byRaw = parts[3].trim();
+            LocalDateTime by;
+            boolean hasTime;
 
-                if (byRaw.contains("T")) {
-                    by = LocalDateTime.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                    hasTime = true;
-                } else {
-                    by = LocalDate.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                    hasTime = false;
-                }
+            if (byRaw.contains("T")) {
+                by = LocalDateTime.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                hasTime = true;
+            } else {
+                by = LocalDate.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                hasTime = false;
+            }
 
-                t = new Deadline(desc, by, hasTime);
-                break;
+            t = new Deadline(desc, by, hasTime);
+            break;
 
-            case "E":
-                if (parts.length < 5) throw new IllegalArgumentException("Missing event dates: " + line);
+        case "E":
+            if (parts.length < 5) {
+                throw new IllegalArgumentException("Missing event dates: " + line);
+            }
 
-                String fromRaw = parts[3].trim();
-                String toRaw = parts[4].trim();
-                LocalDateTime from, to;
-                boolean fromHasTime, toHasTime;
+            String fromRaw = parts[3].trim();
+            String toRaw = parts[4].trim();
+            LocalDateTime from;
+            LocalDateTime to;
+            boolean fromHasTime;
+            boolean toHasTime;
 
-                if (fromRaw.contains("T")) {
-                    from = LocalDateTime.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                    fromHasTime = true;
-                } else {
-                    from = LocalDate.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                    fromHasTime = false;
-                }
+            if (fromRaw.contains("T")) {
+                from = LocalDateTime.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                fromHasTime = true;
+            } else {
+                from = LocalDate.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                fromHasTime = false;
+            }
 
-                if (toRaw.contains("T")) {
-                    to = LocalDateTime.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                    toHasTime = true;
-                } else {
-                    to = LocalDate.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                    toHasTime = false;
-                }
+            if (toRaw.contains("T")) {
+                to = LocalDateTime.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                toHasTime = true;
+            } else {
+                to = LocalDate.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                toHasTime = false;
+            }
 
-                t = new Event(desc, from, fromHasTime, to, toHasTime);
-                break;
+            t = new Event(desc, from, fromHasTime, to, toHasTime);
+            break;
 
-            default:
-                throw new IllegalArgumentException("Unknown duke.task type: " + type);
+        default:
+            throw new IllegalArgumentException("Unknown duke.task type: " + type);
         }
 
-        if (done) t.mark();
+        if (done) {
+            t.mark();
+        }
+
         return t;
     }
 
@@ -237,7 +255,8 @@ public class Storage {
             String suffix = ".corrupt-" + System.currentTimeMillis();
             Path backup = dataDir.resolve(dataFile.getFileName() + suffix);
             Files.move(dataFile, backup, StandardCopyOption.REPLACE_EXISTING);
-            System.err.println("[WARN] Data file appears corrupted: " + ex.getClass().getSimpleName() + ". Backed up to " + backup);
+            System.err.println("[WARN] Data file appears corrupted: " + ex.getClass().getSimpleName()
+                    + ". Backed up to " + backup);
         } catch (IOException ioe) {
             System.err.println("[WARN] Failed to back up corrupt file: " + ioe.getMessage());
         }

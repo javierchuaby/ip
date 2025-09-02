@@ -1,7 +1,8 @@
 package duke.task;
 
-import duke.util.DateTimeUtil;
 import java.time.LocalDateTime;
+
+import duke.util.DateTimeUtil;
 
 /**
  * Represents an event task with start and end date/time.
@@ -10,26 +11,34 @@ import java.time.LocalDateTime;
  */
 public class Event extends Task {
 
-    /** The start date and time for this event */
+    /**
+     * The start date and time for this event
+     */
     private final LocalDateTime from;
 
-    /** The end date and time for this event */
+    /**
+     * The end date and time for this event
+     */
     private final LocalDateTime to;
 
-    /** Whether the start time includes a specific time component */
+    /**
+     * Whether the start time includes a specific time component
+     */
     private final boolean fromHasTime;
 
-    /** Whether the end time includes a specific time component */
+    /**
+     * Whether the end time includes a specific time component
+     */
     private final boolean toHasTime;
 
     /**
      * Constructs an Event task with specified description and start/end times.
      *
      * @param description The event description
-     * @param from The start date and time as LocalDateTime
+     * @param from        The start date and time as LocalDateTime
      * @param fromHasTime true if start includes specific time, false for date only
-     * @param to The end date and time as LocalDateTime
-     * @param toHasTime true if end includes specific time, false for date only
+     * @param to          The end date and time as LocalDateTime
+     * @param toHasTime   true if end includes specific time, false for date only
      */
     public Event(
             String description,
@@ -49,8 +58,8 @@ public class Event extends Task {
      * Uses DateTimeUtil to parse flexible date/time formats.
      *
      * @param description The event description
-     * @param fromString The start date/time as a string to be parsed
-     * @param toString The end date/time as a string to be parsed
+     * @param fromString  The start date/time as a string to be parsed
+     * @param toString    The end date/time as a string to be parsed
      * @throws IllegalArgumentException if either date/time string cannot be parsed
      */
     public Event(String description, String fromString, String toString) {

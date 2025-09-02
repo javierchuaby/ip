@@ -9,16 +9,20 @@ import duke.ui.Ui;
  * Changes the completion status of the specified task.
  */
 public class MarkCommand implements Command {
-    /** The 1-based index of the task to mark/unmark */
+    /**
+     * The 1-based index of the task to mark/unmark
+     */
     private final int index;
-    /** Whether to mark (true) or unmark (false) the task */
+    /**
+     * Whether to mark (true) or unmark (false) the task
+     */
     private final boolean mark;
 
     /**
      * Constructs a MarkCommand with the specified task index and mark status.
      *
      * @param index The 1-based index of the task to mark/unmark
-     * @param mark true to mark as completed, false to unmark
+     * @param mark  true to mark as completed, false to unmark
      */
     public MarkCommand(int index, boolean mark) {
         this.index = index;
@@ -30,7 +34,7 @@ public class MarkCommand implements Command {
      * If the index is out of bounds, shows an error message.
      *
      * @param tasks The task list containing the task to mark/unmark
-     * @param ui The user interface for displaying results and errors
+     * @param ui    The user interface for displaying results and errors
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {

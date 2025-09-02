@@ -1,5 +1,8 @@
 package duke;
 
+import java.util.List;
+import java.util.Scanner;
+
 import duke.command.ClearCommand;
 import duke.command.Command;
 import duke.parser.Parser;
@@ -7,8 +10,7 @@ import duke.storage.Storage;
 import duke.task.Task;
 import duke.task.TaskList;
 import duke.ui.Ui;
-import java.util.List;
-import java.util.Scanner;
+
 
 /**
  * Main Duke application class that coordinates all components.
@@ -17,16 +19,24 @@ import java.util.Scanner;
  */
 public class MrMoon {
 
-    /** The task list containing all user tasks */
+    /**
+     * The task list containing all user tasks
+     */
     private final TaskList tasks;
 
-    /** The user interface component for input/output */
+    /**
+     * The user interface component for input/output
+     */
     private final Ui ui;
 
-    /** The command parser for interpreting user input */
+    /**
+     * The command parser for interpreting user input
+     */
     private final Parser parser;
 
-    /** The scanner for reading user input */
+    /**
+     * The scanner for reading user input
+     */
     private final Scanner scanner;
 
     /**
@@ -122,16 +132,16 @@ public class MrMoon {
      */
     private boolean handleClearConfirmation(String response) {
         switch (response) {
-            case "yes":
-                tasks.clear();
-                ui.printCleared();
-                return true;
-            case "no":
-                ui.printClearCanceled();
-                return true;
-            default:
-                ui.printPleaseTypeYesNo();
-                return false; // Keep waiting
+        case "yes":
+            tasks.clear();
+            ui.printCleared();
+            return true;
+        case "no":
+            ui.printClearCanceled();
+            return true;
+        default:
+            ui.printPleaseTypeYesNo();
+            return false; // Keep waiting
         }
     }
 }

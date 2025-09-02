@@ -9,21 +9,27 @@ import duke.ui.Ui;
  * An event task has a description, start time, and end time.
  */
 public class EventCommand implements Command {
-    /** The description of the event */
+    /**
+     * The description of the event
+     */
     private final String description;
 
-    /** The start time input string */
+    /**
+     * The start time input string
+     */
     private final String fromInput;
 
-    /** The end time input string */
+    /**
+     * The end time input string
+     */
     private final String toInput;
 
     /**
      * Constructs an EventCommand with the specified description and time range.
      *
      * @param description The description of the event
-     * @param fromInput The start time string
-     * @param toInput The end time string
+     * @param fromInput   The start time string
+     * @param toInput     The end time string
      */
     public EventCommand(String description, String fromInput, String toInput) {
         this.description = description;
@@ -36,7 +42,7 @@ public class EventCommand implements Command {
      * If the description is empty or the time format is invalid, shows appropriate error messages.
      *
      * @param tasks The task list to add the event to
-     * @param ui The user interface for displaying results and errors
+     * @param ui    The user interface for displaying results and errors
      */
     @Override
     public void execute(TaskList tasks, Ui ui) {
