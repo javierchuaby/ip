@@ -1,0 +1,44 @@
+.label {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #000000;
+    -fx-border-width: 2px;
+    -fx-background-radius: 1em 1em 0 1em;
+    -fx-border-radius: 1em 1em 0 1em;
+    -fx-wrap-text: true;
+    -fx-text-overrun: clip;
+    -fx-padding: 8px 10px 8px 10px;
+    -fx-max-width: 200px;
+    -fx-pref-width: -1;
+    -fx-pref-height: -1;  /* Let it calculate natural height */
+    -fx-min-height: -1;   /* No minimum height restriction */
+    -fx-max-height: -1;   /* No maximum height restriction */
+    -fx-font-size: 14px;
+    -fx-text-alignment: left;
+}
+
+.reply-label {
+    -fx-background-radius: 1em 1em 1em 0;
+    -fx-border-radius: 1em 1em 1em 0;
+    -fx-wrap-text: true;
+    -fx-text-overrun: clip;
+    -fx-padding: 8px 10px 8px 10px;
+    -fx-max-width: 200px;
+    -fx-pref-width: -1;
+    -fx-pref-height: -1;  /* Let it calculate natural height */
+    -fx-min-height: -1;   /* No minimum height restriction */
+    -fx-max-height: -1;   /* No maximum height restriction */
+    -fx-font-size: 14px;
+    -fx-text-alignment: left;
+}
+
+#displayPicture {
+    /* Shadow effect on image. */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
+
+    /* Change size of image. */
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+
+    /* Rotate image clockwise by degrees. */
+    -fx-rotate: 0;
+}

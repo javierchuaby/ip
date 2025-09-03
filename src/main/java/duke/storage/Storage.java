@@ -22,7 +22,7 @@ import duke.task.Todo;
 
 /**
  * Handles persistent storage of tasks to and from the file system.
- * Manages encoding tasks to text format and decoding them back to objects.
+ * Manages to encode tasks to text format and decoding them back to objects.
  * Provides error handling for corrupted files and atomic save operations.
  */
 public class Storage {

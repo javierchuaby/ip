@@ -5,10 +5,12 @@ import java.util.Scanner;
 
 import duke.command.ClearCommand;
 import duke.command.Command;
+import duke.command.EmptyCommand;
 import duke.parser.Parser;
 import duke.storage.Storage;
 import duke.task.Task;
 import duke.task.TaskList;
+import duke.ui.GuiUi;
 import duke.ui.Ui;
 
 
@@ -63,7 +65,7 @@ public class MrMoon {
     }
 
     /**
-     * Constructs the main Duke application with default storage path.
+     * Constructs the main Duke application with a default storage path.
      * Uses "data/duke.txt" as the default storage file.
      */
     public MrMoon() {
@@ -74,7 +76,7 @@ public class MrMoon {
      * Main entry point for the Duke application.
      * Creates and runs the application with command line argument support.
      *
-     * @param args Command line arguments, first argument used as storage file path
+     * @param args Command line arguments, first argument used as a storage file path
      */
     public static void main(String[] args) {
         String filePath = args.length > 0 ? args[0] : "data/duke.txt";
@@ -123,6 +125,30 @@ public class MrMoon {
         }
     }
 
+    public String getResponse(String input) {
+        try {
+            Command c = parser.parseCommand(input);
+            GuiUi guiUi = new GuiUi();
+
+            c.execute(tasks, guiUi);
+
+            String result = guiUi.getResponse();
+
+            if (c instanceof EmptyCommand) {
+                guiUi.printUnknownEmpty();
+                return guiUi.getResponse();
+            }
+
+            return result;
+        } catch (Exception e) {
+            return "OOPS!!! I'm sorry, but I don't know what that means :-(";
+        }
+    }
+
+    public TaskList getTasks() {
+        return tasks;
+    }
+
     /**
      * Handles user responses to clear confirmation prompts.
      * Processes "yes" to clear tasks, "no" to cancel, and asks for clarification otherwise.
@@ -141,7 +167,7 @@ public class MrMoon {
             return true;
         default:
             ui.printPleaseTypeYesNo();
-            return false; // Keep waiting
+            return false;
         }
     }
 }

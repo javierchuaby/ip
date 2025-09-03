@@ -2,17 +2,28 @@ package duke.ui;
 
 import java.io.PrintStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import duke.task.Task;
 import duke.task.TaskList;
+import duke.util.CommandListingUtil;
 
 /**
  * User Interface component handling console input/output operations.
  * Provides formatted output methods for different types of messages and task displays.
  * Uses PrintStream for testability and flexible output redirection.
  */
-public record Ui(PrintStream out) {
+public class Ui {
+    private final PrintStream out;
+
+    /**
+     *
+     */
+    public Ui(PrintStream out) {
+        this.out = out;
+    }
 
     /**
      * Prints a horizontal separator line to visually separate sections.
@@ -53,15 +64,7 @@ public record Ui(PrintStream out) {
         printLine();
         out.println("    " + "Sorry, I do not understand what " + input + " means.");
         out.println("    " + "Try one of these:");
-        out.println("    - list");
-        out.println("    - todo <description>");
-        out.println("    - deadline <description> /by <date>");
-        out.println("    - event <description> /from <date> /to <date>");
-        out.println("    - mark | unmark <index>");
-        out.println("    - delete <index>");
-        out.println("    - on <date>");
-        out.println("    - clear (clear all tasks in list)");
-        out.println("    - find <keyword>");
+        CommandListingUtil.appendCommands(cmd -> out.println("    " + cmd));
         printLine();
     }
 
@@ -71,15 +74,7 @@ public record Ui(PrintStream out) {
     public void printUnknownEmpty() {
         printLine();
         out.println("    " + "Use the following commands:");
-        out.println("    - list");
-        out.println("    - todo <description>");
-        out.println("    - deadline <description> /by <date>");
-        out.println("    - event <description> /from <date> /to <date>");
-        out.println("    - mark | unmark <index>");
-        out.println("    - delete <index>");
-        out.println("    - on <date>");
-        out.println("    - clear (clear all tasks in list)");
-        out.println("    - find <keyword>");
+        CommandListingUtil.appendCommands(cmd -> out.println("    " + cmd));
         printLine();
     }
 
@@ -106,7 +101,7 @@ public record Ui(PrintStream out) {
      */
     public void printAgendaForDate(LocalDate date, List<Task> items, TaskList fullList) {
         printLine();
-        out.println("    Tasks on " + date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM uuuu")) + ":");
+        out.println("    Tasks on " + date.format(DateTimeFormatter.ofPattern("d MMM uuuu")) + ":");
 
         if (items.isEmpty()) {
             out.println("    (none)");
@@ -285,4 +280,28 @@ public record Ui(PrintStream out) {
 
         printLine();
     }
+
+    public PrintStream out() {
+        return out;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (Ui) obj;
+        return Objects.equals(this.out, that.out);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(out);
+    }
+
+    @Override
+    public String toString() {
+        return "Ui[" +
+                "out=" + out + ']';
+    }
+
 }
