@@ -5,9 +5,6 @@ import java.util.List;
 /**
  * Utility class for generating consistent command help listings.
  * Provides centralized command list management for UI classes.
- *
- * @author [Your Name]
- * @version 1.0
  */
 public final class CommandListingUtil {
 

@@ -22,6 +22,22 @@ import duke.command.UnknownCommand;
 public class Parser {
 
     /**
+     * Validates multiple string parts to ensure none are null or empty.
+     * Uses varargs to accept any number of string arguments for validation.
+     *
+     * @param errorMessage The error message to throw if validation fails
+     * @param parts Variable number of string parts to validate
+     * @throws IllegalArgumentException if any part is null, empty, or whitespace-only
+     */
+    private void validateParts(String errorMessage, String... parts) {
+        for (String part : parts) {
+            if (part == null || part.trim().isEmpty()) {
+                throw new IllegalArgumentException(errorMessage);
+            }
+        }
+    }
+
+    /**
      * Parses a line of user input into the appropriate Command object.
      * Uses a switch statement to determine command type and create corresponding Command.
      *
@@ -40,7 +56,12 @@ public class Parser {
         case "list":
             return new ListCommand();
         case "todo":
-            return new TodoCommand(args);
+            try {
+                validateParts("Todo description cannot be empty", args);
+                return new TodoCommand(args);
+            } catch (IllegalArgumentException ex) {
+                return new UnknownCommand(line);
+            }
         case "deadline":
             try {
                 String[] parts = parseDeadlineArgs(args == null ? "" : args);
@@ -113,9 +134,7 @@ public class Parser {
         String desc = args.substring(0, i).trim();
         String byRaw = args.substring(i + 3).trim();
 
-        if (desc.isEmpty() || byRaw.isEmpty()) {
-            throw new IllegalArgumentException("Usage");
-        }
+        validateParts("Usage: deadline <description> /by <date>", desc, byRaw);
 
         return new String[]{desc, byRaw};
     }
@@ -131,7 +150,6 @@ public class Parser {
     public String[] parseEventArgs(String args) {
         int i = args.lastIndexOf("/from");
         int j = args.lastIndexOf("/to");
-
         if (i < 0 || j < 0 || i >= j) {
             throw new IllegalArgumentException("Missing /from or /to");
         }
@@ -140,9 +158,7 @@ public class Parser {
         String fromRaw = args.substring(i + 5, j).trim();
         String toRaw = args.substring(j + 3).trim();
 
-        if (desc.isEmpty() || fromRaw.isEmpty() || toRaw.isEmpty()) {
-            throw new IllegalArgumentException("Usage");
-        }
+        validateParts("Usage: event <description> /from <date> /to <date>", desc, fromRaw, toRaw);
 
         return new String[]{desc, fromRaw, toRaw};
     }
