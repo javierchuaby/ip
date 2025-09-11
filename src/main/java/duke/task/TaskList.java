@@ -188,4 +188,17 @@ public class TaskList {
 
         return matches;
     }
+
+    /**
+     * Adds a task at the specified index.
+     *
+     * @param idx  The index where to insert the task (0-based)
+     * @param task The task to add
+     */
+    public void add(int idx, Task task) {
+        assert task != null : "Task cannot be null";
+        assert idx >= 0 && idx <= tasks.size() : "Index must be within bounds";
+        tasks.add(idx, task);
+        storage.save(tasks);
+    }
 }

@@ -13,6 +13,7 @@ import duke.command.ListCommand;
 import duke.command.MarkCommand;
 import duke.command.TodoCommand;
 import duke.command.UnknownCommand;
+import duke.command.UpdateCommand;
 
 /**
  * Parses user input strings into Command objects.
@@ -44,6 +45,7 @@ public class Parser {
     private static final String CMD_ON = "on";
     private static final String CMD_CLEAR = "clear";
     private static final String CMD_FIND = "find";
+    private static final String CMD_UPDATE = "update";
 
     /**
      * Validates multiple string parts to ensure none are null or empty.
@@ -93,6 +95,7 @@ public class Parser {
             case CMD_ON -> new AgendaCommand(args);
             case CMD_CLEAR -> new ClearCommand();
             case CMD_FIND -> new FindCommand(args);
+            case CMD_UPDATE -> parseUpdateCommand(args, line);
             default -> new UnknownCommand(line);
         };
     }
@@ -129,6 +132,21 @@ public class Parser {
             String[] parts = parseEventArgs(args == null ? "" : args);
             return new EventCommand(parts[0], parts[1], parts[2]);
         } catch (IllegalArgumentException ex) {
+            return new UnknownCommand(originalLine);
+        }
+    }
+
+    /**
+     * Parses update command with error handling.
+     */
+    private Command parseUpdateCommand(String args, String originalLine) {
+        try {
+            int taskIndex = parseOneBasedIndex(args);
+            if (taskIndex == -1) {
+                throw new IllegalArgumentException("Invalid task number");
+            }
+            return new UpdateCommand(taskIndex);
+        } catch (Exception ex) {
             return new UnknownCommand(originalLine);
         }
     }

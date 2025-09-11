@@ -9,6 +9,7 @@ import java.util.Objects;
 import duke.task.Task;
 import duke.task.TaskList;
 import duke.util.CommandListingUtil;
+import duke.util.DateTimeUtil;
 
 /**
  * User Interface component handling console input/output operations.
@@ -216,7 +217,7 @@ public class Ui {
     /**
      * Prints a message indicating there are no tasks to clear.
      */
-    public void printNoTasksToClear() {
+    public void printNoTasksInList() {
         printLine();
         out.println("    " + "There are no tasks in your list, idiot!");
         printLine();
@@ -278,6 +279,92 @@ public class Ui {
             }
         }
 
+        printLine();
+    }
+
+    /**
+     * Prints the initial update prompt based on task type.
+     */
+    public void printUpdatePrompt(Task task, int taskIndex) {
+        printLine();
+        out.println(" Updating task " + taskIndex + ": " + task.toString());
+
+        switch (task.getTaskType()) {
+        case TODO:
+            out.println(" What would you like to rename this 'Todo' to?");
+            break;
+        case DEADLINE:
+            out.println(" What would you like to update?");
+            out.println(" 1. Rename");
+            out.println(" 2. Edit date/time");
+            out.println(" Please choose (1/2):");
+            break;
+        case EVENT:
+            out.println(" What would you like to update?");
+            out.println(" 1. Rename");
+            out.println(" 2. Edit date");
+            out.println(" Please choose (1/2):");
+            break;
+        }
+        printLine();
+    }
+
+    /**
+     * Prints prompt for description update.
+     */
+    public void printUpdateDescriptionPrompt(Task task) {
+        printLine();
+        out.println(" What would you like to rename this '" +
+                task.getTaskType().getDisplayName() + "' to?");
+        printLine();
+    }
+
+    /**
+     * Prints prompt for date update (deadlines).
+     */
+    public void printUpdateDatePrompt() {
+        printLine();
+        out.println(" Please enter the new date/time:");
+        out.println(" " + DateTimeUtil.examplesHelp());
+        printLine();
+    }
+
+    /**
+     * Prints prompt for start date update (events).
+     */
+    public void printUpdateStartDatePrompt() {
+        printLine();
+        out.println(" Please enter the new start date/time:");
+        out.println(" " + DateTimeUtil.examplesHelp());
+        printLine();
+    }
+
+    /**
+     * Prints prompt for end date update (events).
+     */
+    public void printUpdateEndDatePrompt() {
+        printLine();
+        out.println(" Please enter the new end date/time:");
+        out.println(" " + DateTimeUtil.examplesHelp());
+        printLine();
+    }
+
+    /**
+     * Prints message for invalid choice.
+     */
+    public void printInvalidChoice() {
+        printLine();
+        out.println(" Invalid choice. Please enter 1 or 2:");
+        printLine();
+    }
+
+    /**
+     * Prints confirmation that task was updated.
+     */
+    public void printTaskUpdated(Task task, String field) {
+        printLine();
+        out.println(" Great! I've updated the " + field + ":");
+        out.println(" " + task.toString());
         printLine();
     }
 

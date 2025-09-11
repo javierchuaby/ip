@@ -6,6 +6,7 @@ import java.util.List;
 import duke.task.Task;
 import duke.task.TaskList;
 import duke.util.CommandListingUtil;
+import duke.util.DateTimeUtil;
 
 /**
  * GUI-specific UI that captures output as strings instead of printing to console
@@ -45,13 +46,18 @@ public class GuiUi extends Ui {
     @Override
     public void printList(List<Task> items) {
         if (items.isEmpty()) {
-            append("You have no tasks in your list!");
+            append("You have no tasks in your list, idiot!");
         } else {
             append("Here are the tasks in your list:");
             for (int i = 0; i < items.size(); i++) {
                 append((i + 1) + ". " + items.get(i).toString());
             }
         }
+    }
+
+    @Override
+    public void printNoTasksInList() {
+        append("There are no tasks in your list, idiot!");
     }
 
     @Override
@@ -115,11 +121,6 @@ public class GuiUi extends Ui {
         append("Clear operation canceled.");
     }
 
-    @Override
-    public void printNoTasksToClear() {
-        append("There are no tasks in your list!");
-    }
-
     /**
      * Prints an error message for unknown user commands.
      * Includes a helpful list of available commands.
@@ -140,6 +141,85 @@ public class GuiUi extends Ui {
     public void printUnknownEmpty() {
         append("Use the following commands:");
         CommandListingUtil.appendCommands(this::append);
+    }
+
+    /**
+     * Prints the initial update prompt based on task type.
+     */
+    @Override
+    public void printUpdatePrompt(Task task, int taskIndex) {
+        append("Updating task " + taskIndex + ": " + task.toString());
+
+        switch (task.getTaskType()) {
+        case TODO:
+            append("What would you like to rename this 'Todo' to?");
+            break;
+        case DEADLINE:
+            append("What would you like to update?");
+            append("1. Rename");
+            append("2. Edit date/time");
+            append("Please choose (1/2):");
+            break;
+        case EVENT:
+            append("What would you like to update?");
+            append("1. Rename");
+            append("2. Edit date");
+            append("Please choose (1/2):");
+            break;
+        }
+    }
+
+    /**
+     * Prints prompt for description update.
+     */
+    @Override
+    public void printUpdateDescriptionPrompt(Task task) {
+        append("What would you like to rename this '" +
+                task.getTaskType().getDisplayName() + "' to?");
+    }
+
+    /**
+     * Prints prompt for date update (deadlines).
+     */
+    @Override
+    public void printUpdateDatePrompt() {
+        append("Please enter the new date/time:");
+        append(DateTimeUtil.examplesHelp());
+    }
+
+    /**
+     * Prints prompt for start date update (events).
+     */
+    @Override
+    public void printUpdateStartDatePrompt() {
+        append("Please enter the new start date/time:");
+        append(DateTimeUtil.examplesHelp());
+    }
+
+    /**
+     * Prints prompt for end date update (events).
+     */
+    @Override
+    public void printUpdateEndDatePrompt() {
+        append("Please enter the new end date/time:");
+        append(DateTimeUtil.examplesHelp());
+    }
+
+    /**
+     * Prints message for invalid choice.
+     */
+    @Override
+    public void printInvalidChoice() {
+        append("Invalid choice. Please enter 1 or 2:");
+    }
+
+    /**
+     * Prints confirmation that task was updated.
+     */
+    @Override
+    public void printTaskUpdated(Task task, String field) {
+        append("Great! I've updated the " + field + ":");
+        append(task.toString());
     }
 
     /**

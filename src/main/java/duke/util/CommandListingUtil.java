@@ -18,6 +18,7 @@ public final class CommandListingUtil {
             "- event <description> /from <start> /to <end>",
             "- mark | unmark <task_number>",
             "- delete <task_number>",
+            "- update <task_number>",
             "- on <date>",
             "- clear (clear all tasks in list)",
             "- find <keyword>"
