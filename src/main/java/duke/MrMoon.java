@@ -48,6 +48,8 @@ public class MrMoon {
      * @param filePath The file path for task data storage
      */
     public MrMoon(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty() : "File path must be provided";
+
         this.ui = new Ui(System.out);
         this.parser = new Parser();
         Storage storage = new Storage(filePath);

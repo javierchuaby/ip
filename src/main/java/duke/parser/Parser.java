@@ -30,6 +30,8 @@ public class Parser {
      * @throws IllegalArgumentException if any part is null, empty, or whitespace-only
      */
     private void validateParts(String errorMessage, String... parts) {
+        assert errorMessage != null && !errorMessage.trim().isEmpty() : "Error message must be provided";
+
         for (String part : parts) {
             if (part == null || part.trim().isEmpty()) {
                 throw new IllegalArgumentException(errorMessage);
@@ -45,6 +47,8 @@ public class Parser {
      * @return The corresponding Command object to execute
      */
     public Command parseCommand(String line) {
+        assert line != null : "Input line cannot be null";
+
         String cmd = getCommandWord(line);
         String args = getArguments(line);
 
