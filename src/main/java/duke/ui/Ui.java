@@ -219,7 +219,7 @@ public class Ui {
      */
     public void printNoTasksInList() {
         printLine();
-        out.println("    " + "There are no tasks in your list, idiot!");
+        out.println("    " + "There are no tasks in your list!");
         printLine();
     }
 

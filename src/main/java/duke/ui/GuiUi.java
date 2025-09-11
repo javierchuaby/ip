@@ -46,7 +46,7 @@ public class GuiUi extends Ui {
     @Override
     public void printList(List<Task> items) {
         if (items.isEmpty()) {
-            append("You have no tasks in your list, idiot!");
+            append("You have no tasks in your list!");
         } else {
             append("Here are the tasks in your list:");
             for (int i = 0; i < items.size(); i++) {
@@ -57,7 +57,7 @@ public class GuiUi extends Ui {
 
     @Override
     public void printNoTasksInList() {
-        append("There are no tasks in your list, idiot!");
+        append("There are no tasks in your list!");
     }
 
     @Override
