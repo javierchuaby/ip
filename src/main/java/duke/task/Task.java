@@ -73,6 +73,13 @@ public abstract class Task {
     }
 
     /**
+     * Returns the type of this task.
+     *
+     * @return The TaskType enum value for this task
+     */
+    public abstract TaskType getTaskType();
+
+    /**
      * Returns the string representation of the task.
      * Must be implemented by subclasses to define their specific format.
      *

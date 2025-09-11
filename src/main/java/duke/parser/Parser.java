@@ -16,20 +16,47 @@ import duke.command.UnknownCommand;
 
 /**
  * Parses user input strings into Command objects.
+ * Uses constants instead of magic numbers and strings for better maintainability.
  * Responsible for extracting command words and arguments from user input.
  * Provides specialized parsing methods for complex commands like deadline and event.
  */
 public class Parser {
+    // Command parsing constants
+    private static final String BY_DELIMITER = "/by";
+    private static final String FROM_DELIMITER = "/from";
+    private static final String TO_DELIMITER = "/to";
+
+    // Magic number constants for substring operations
+    private static final int BY_OFFSET = 3;     // "/by".length()
+    private static final int FROM_OFFSET = 5;   // "/from".length()
+    private static final int TO_OFFSET = 3;     // "/to".length()
+
+    // Command names
+    private static final String CMD_EMPTY = "";
+    private static final String CMD_BYE = "bye";
+    private static final String CMD_LIST = "list";
+    private static final String CMD_TODO = "todo";
+    private static final String CMD_DEADLINE = "deadline";
+    private static final String CMD_EVENT = "event";
+    private static final String CMD_MARK = "mark";
+    private static final String CMD_UNMARK = "unmark";
+    private static final String CMD_DELETE = "delete";
+    private static final String CMD_ON = "on";
+    private static final String CMD_CLEAR = "clear";
+    private static final String CMD_FIND = "find";
 
     /**
      * Validates multiple string parts to ensure none are null or empty.
      * Uses varargs to accept any number of string arguments for validation.
      *
      * @param errorMessage The error message to throw if validation fails
-     * @param parts Variable number of string parts to validate
+     * @param parts        Variable number of string parts to validate
      * @throws IllegalArgumentException if any part is null, empty, or whitespace-only
      */
     private void validateParts(String errorMessage, String... parts) {
+        assert errorMessage != null && !errorMessage.trim().isEmpty() :
+                "Error message cannot be null or empty";
+
         for (String part : parts) {
             if (part == null || part.trim().isEmpty()) {
                 throw new IllegalArgumentException(errorMessage);
@@ -39,57 +66,70 @@ public class Parser {
 
     /**
      * Parses a line of user input into the appropriate Command object.
-     * Uses a switch statement to determine command type and create corresponding Command.
+     * Uses constants instead of magic strings for better maintainability.
      *
      * @param line The raw input command string from the user
      * @return The corresponding Command object to execute
      */
     public Command parseCommand(String line) {
+        assert line != null : "Input line cannot be null";
+
         String cmd = getCommandWord(line);
         String args = getArguments(line);
 
-        switch (cmd) {
-        case "":
-            return new EmptyCommand();
-        case "bye":
-            return new ExitCommand();
-        case "list":
-            return new ListCommand();
-        case "todo":
-            try {
-                validateParts("Todo description cannot be empty", args);
-                return new TodoCommand(args);
-            } catch (IllegalArgumentException ex) {
-                return new UnknownCommand(line);
-            }
-        case "deadline":
-            try {
-                String[] parts = parseDeadlineArgs(args == null ? "" : args);
-                return new DeadlineCommand(parts[0], parts[1]);
-            } catch (IllegalArgumentException ex) {
-                return new UnknownCommand(line);
-            }
-        case "event":
-            try {
-                String[] parts = parseEventArgs(args == null ? "" : args);
-                return new EventCommand(parts[0], parts[1], parts[2]);
-            } catch (IllegalArgumentException ex) {
-                return new UnknownCommand(line);
-            }
-        case "mark":
-            return new MarkCommand(parseOneBasedIndex(args), true);
-        case "unmark":
-            return new MarkCommand(parseOneBasedIndex(args), false);
-        case "delete":
-            return new DeleteCommand(parseOneBasedIndex(args));
-        case "on":
-            return new AgendaCommand(args);
-        case "clear":
-            return new ClearCommand();
-        case "find":
-            return new FindCommand(args);
-        default:
-            return new UnknownCommand(line);
+        assert cmd != null : "Command word should never be null";
+        assert args != null : "Arguments should never be null (can be empty)";
+
+        return switch (cmd) {
+            case CMD_EMPTY -> new EmptyCommand();
+            case CMD_BYE -> new ExitCommand();
+            case CMD_LIST -> new ListCommand();
+            case CMD_TODO -> parseTodoCommand(args, line);
+            case CMD_DEADLINE -> parseDeadlineCommand(args, line);
+            case CMD_EVENT -> parseEventCommand(args, line);
+            case CMD_MARK -> new MarkCommand(parseOneBasedIndex(args), true);
+            case CMD_UNMARK -> new MarkCommand(parseOneBasedIndex(args), false);
+            case CMD_DELETE -> new DeleteCommand(parseOneBasedIndex(args));
+            case CMD_ON -> new AgendaCommand(args);
+            case CMD_CLEAR -> new ClearCommand();
+            case CMD_FIND -> new FindCommand(args);
+            default -> new UnknownCommand(line);
+        };
+    }
+
+    /**
+     * Parses todo command with error handling.
+     */
+    private Command parseTodoCommand(String args, String originalLine) {
+        try {
+            validateParts("Todo description cannot be empty", args);
+            return new TodoCommand(args);
+        } catch (IllegalArgumentException ex) {
+            return new UnknownCommand(originalLine);
+        }
+    }
+
+    /**
+     * Parses deadline command with error handling.
+     */
+    private Command parseDeadlineCommand(String args, String originalLine) {
+        try {
+            String[] parts = parseDeadlineArgs(args == null ? "" : args);
+            return new DeadlineCommand(parts[0], parts[1]);
+        } catch (IllegalArgumentException ex) {
+            return new UnknownCommand(originalLine);
+        }
+    }
+
+    /**
+     * Parses event command with error handling.
+     */
+    private Command parseEventCommand(String args, String originalLine) {
+        try {
+            String[] parts = parseEventArgs(args == null ? "" : args);
+            return new EventCommand(parts[0], parts[1], parts[2]);
+        } catch (IllegalArgumentException ex) {
+            return new UnknownCommand(originalLine);
         }
     }
 
@@ -100,6 +140,8 @@ public class Parser {
      * @return The command word as lowercase string, or empty string if no input
      */
     public String getCommandWord(String line) {
+        assert line != null : "Line cannot be null";
+
         String s = line.trim();
         int sp = s.indexOf(' ');
         return (sp == -1 ? s : s.substring(0, sp)).toLowerCase();
@@ -112,6 +154,8 @@ public class Parser {
      * @return The arguments string (everything after the command word)
      */
     public String getArguments(String line) {
+        assert line != null : "Line cannot be null";
+
         String s = line.trim();
         int sp = s.indexOf(' ');
         return sp == -1 ? "" : s.substring(sp + 1).trim();
@@ -119,6 +163,7 @@ public class Parser {
 
     /**
      * Parses deadline command arguments into description and by-date components.
+     * Uses constants instead of magic strings and numbers.
      * Expects format: "description /by date"
      *
      * @param args The argument string following 'deadline' command
@@ -126,21 +171,24 @@ public class Parser {
      * @throws IllegalArgumentException if /by is missing or components are empty
      */
     public String[] parseDeadlineArgs(String args) {
-        int i = args.lastIndexOf("/by");
+        assert args != null : "Arguments cannot be null";
+
+        int i = args.lastIndexOf(BY_DELIMITER);
         if (i < 0) {
-            throw new IllegalArgumentException("Missing /by");
+            throw new IllegalArgumentException("Missing " + BY_DELIMITER);
         }
 
         String desc = args.substring(0, i).trim();
-        String byRaw = args.substring(i + 3).trim();
+        String byRaw = args.substring(i + BY_OFFSET).trim();
 
-        validateParts("Usage: deadline <description> /by <date>", desc, byRaw);
+        validateParts("Usage: deadline <description> " + BY_DELIMITER + " <date>", desc, byRaw);
 
         return new String[]{desc, byRaw};
     }
 
     /**
      * Parses event command arguments into description, from-date, and to-date.
+     * Uses constants instead of magic strings and numbers.
      * Expects format: "description /from date /to date"
      *
      * @param args The argument string following 'event' command
@@ -148,17 +196,20 @@ public class Parser {
      * @throws IllegalArgumentException if /from or /to is missing or components are empty
      */
     public String[] parseEventArgs(String args) {
-        int i = args.lastIndexOf("/from");
-        int j = args.lastIndexOf("/to");
+        assert args != null : "Arguments cannot be null";
+
+        int i = args.lastIndexOf(FROM_DELIMITER);
+        int j = args.lastIndexOf(TO_DELIMITER);
         if (i < 0 || j < 0 || i >= j) {
-            throw new IllegalArgumentException("Missing /from or /to");
+            throw new IllegalArgumentException("Missing " + FROM_DELIMITER + " or " + TO_DELIMITER);
         }
 
         String desc = args.substring(0, i).trim();
-        String fromRaw = args.substring(i + 5, j).trim();
-        String toRaw = args.substring(j + 3).trim();
+        String fromRaw = args.substring(i + FROM_OFFSET, j).trim();
+        String toRaw = args.substring(j + TO_OFFSET).trim();
 
-        validateParts("Usage: event <description> /from <date> /to <date>", desc, fromRaw, toRaw);
+        validateParts("Usage: event <description> " + FROM_DELIMITER + " <date> " + TO_DELIMITER + " <date>",
+                desc, fromRaw, toRaw);
 
         return new String[]{desc, fromRaw, toRaw};
     }
@@ -174,6 +225,7 @@ public class Parser {
         if (args == null) {
             return -1;
         }
+
         String s = args.trim();
         if (s.isEmpty()) {
             return -1;

@@ -108,6 +108,11 @@ public class Event extends Task {
         return DateTimeUtil.toStorageString(to, toHasTime);
     }
 
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.EVENT;
+    }
+
     /**
      * Returns the string representation of the event task.
      * Format: [E] [status] description (from: start_time, to: end_time)

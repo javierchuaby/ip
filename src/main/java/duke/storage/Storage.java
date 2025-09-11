@@ -17,52 +17,45 @@ import java.util.List;
 import duke.task.Deadline;
 import duke.task.Event;
 import duke.task.Task;
+import duke.task.TaskType;
 import duke.task.Todo;
-
 
 /**
  * Handles persistent storage of tasks to and from the file system.
- * Manages to encode tasks to text format and decoding them back to objects.
+ * Uses TaskType enum for type safety instead of magic strings.
+ * Manages encoding tasks to text format and decoding them back to objects.
  * Provides error handling for corrupted files and atomic save operations.
  */
 public class Storage {
+    // Constants for magic numbers
+    private static final int MINIMUM_PARTS_COUNT = 3;
+    private static final int DEADLINE_PARTS_COUNT = 4;
+    private static final int EVENT_PARTS_COUNT = 5;
+    private static final String DONE_FLAG = "1";
+    private static final String NOT_DONE_FLAG = "0";
 
-    /**
-     * The path to the data storage file
-     */
+    // Date/time format constants
+    private static final DateTimeFormatter STORAGE_DATETIME_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+    private static final DateTimeFormatter STORAGE_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String TIME_INDICATOR = "T";
+
     private final Path dataFile;
-
-    /**
-     * The directory containing the data file
-     */
     private final Path dataDir;
 
-    /**
-     * Creates a Storage instance with the specified file path.
-     * Automatically determines the data directory from the file path.
-     *
-     * @param filePath The path to the storage file
-     */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
+
         this.dataFile = Paths.get(filePath);
         Path parent = dataFile.getParent();
         this.dataDir = (parent != null) ? parent : Paths.get(".");
     }
 
-    /**
-     * Creates a Storage instance with the default file path "data/duke.txt".
-     */
     public Storage() {
         this("data/duke.txt");
     }
 
-    /**
-     * Loads tasks from the storage file.
-     * Creates an empty list if the file doesn't exist.
-     * Handles corrupted files by backing them up and returning empty list.
-     *
-     * @return List of loaded Task objects
-     */
     public List<Task> load() {
         ensureDataDir();
         if (!Files.exists(dataFile)) {
@@ -72,11 +65,11 @@ public class Storage {
         try {
             List<String> lines = Files.readAllLines(dataFile, StandardCharsets.UTF_8);
             List<Task> tasks = new ArrayList<>();
-
             for (String line : lines) {
                 if (line == null || line.isBlank()) {
                     continue;
                 }
+
                 Task t = parseLine(line);
                 tasks.add(t);
             }
@@ -88,19 +81,13 @@ public class Storage {
         }
     }
 
-    /**
-     * Saves the list of tasks to storage using atomic file operations.
-     * Writes to a temporary file first, then moves it to the final location.
-     *
-     * @param tasks The list of Task objects to save
-     */
     public void save(List<Task> tasks) {
+        assert tasks != null : "Task list cannot be null";
+
         ensureDataDir();
         Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
-
-        try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
-                StandardOpenOption.TRUNCATE_EXISTING)) {
-
+        try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Task t : tasks) {
                 w.write(encode(t));
                 w.newLine();
@@ -122,11 +109,6 @@ public class Storage {
         }
     }
 
-    /**
-     * Ensures the data directory exists, creating it if necessary.
-     *
-     * @throws RuntimeException if the directory cannot be created
-     */
     private void ensureDataDir() {
         try {
             if (!Files.exists(dataDir)) {
@@ -139,109 +121,159 @@ public class Storage {
 
     /**
      * Encodes a Task object into a tab-separated string for file storage.
-     * Format varies by task type (Todo, Deadline, Event).
+     * Uses TaskType enum for type safety instead of magic strings.
      *
      * @param t The Task to encode
      * @return Tab-separated string representation of the task
      */
     private String encode(Task t) {
-        String done = t.isDone() ? "1" : "0";
+        assert t != null : "Task cannot be null";
 
-        if (t instanceof Todo) {
-            return String.join("\t", "T", done, t.getDescription());
-        } else if (t instanceof Deadline d) {
-            return String.join("\t", "D", done, d.getDescription(), d.getBy());
-        } else if (t instanceof Event e) {
-            return String.join("\t", "E", done, e.getDescription(), e.getFrom(), e.getTo());
-        } else {
-            return String.join("\t", "T", done, t.getDescription());
-        }
+        String done = t.isDone() ? DONE_FLAG : NOT_DONE_FLAG;
+        TaskType type = t.getTaskType();
+
+        return switch (type) {
+            case TODO -> String.join("\t", type.getStorageCode(), done, t.getDescription());
+            case DEADLINE -> {
+                Deadline d = (Deadline) t;
+                yield String.join("\t", type.getStorageCode(), done, d.getDescription(), d.getBy());
+            }
+            case EVENT -> {
+                Event e = (Event) t;
+                yield String.join("\t", type.getStorageCode(), done, e.getDescription(),
+                        e.getFrom(), e.getTo());
+            }
+        };
     }
 
     /**
      * Parses a line from the storage file into a Task object.
-     * Handles different task types and their specific date/time formats.
+     * Uses TaskType enum for type safety instead of magic strings.
      *
      * @param line The tab-separated string from the storage file
      * @return The corresponding Task object
      * @throws IllegalArgumentException if the line format is invalid
      */
     private Task parseLine(String line) {
+        assert line != null && !line.trim().isEmpty() : "Line cannot be null or empty";
+
         String[] parts = line.split("\t");
-        if (parts.length < 3) {
-            throw new IllegalArgumentException("Malformed line: " + line);
-        }
+        validateLineParts(parts, line);
 
-        String type = parts[0].trim();
-        boolean done = "1".equals(parts[1].trim());
+        String typeCode = parts[0].trim();
+        boolean done = isDoneFromString(parts[1].trim());
         String desc = parts[2];
-        Task t;
 
-        switch (type) {
-        case "T":
-            t = new Todo(desc);
-            break;
-
-        case "D":
-            if (parts.length < 4) {
-                throw new IllegalArgumentException("Missing deadline date: " + line);
-            }
-
-            String byRaw = parts[3].trim();
-            LocalDateTime by;
-            boolean hasTime;
-
-            if (byRaw.contains("T")) {
-                by = LocalDateTime.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                hasTime = true;
-            } else {
-                by = LocalDate.parse(byRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                hasTime = false;
-            }
-
-            t = new Deadline(desc, by, hasTime);
-            break;
-
-        case "E":
-            if (parts.length < 5) {
-                throw new IllegalArgumentException("Missing event dates: " + line);
-            }
-
-            String fromRaw = parts[3].trim();
-            String toRaw = parts[4].trim();
-            LocalDateTime from;
-            LocalDateTime to;
-            boolean fromHasTime;
-            boolean toHasTime;
-
-            if (fromRaw.contains("T")) {
-                from = LocalDateTime.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                fromHasTime = true;
-            } else {
-                from = LocalDate.parse(fromRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                fromHasTime = false;
-            }
-
-            if (toRaw.contains("T")) {
-                to = LocalDateTime.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                toHasTime = true;
-            } else {
-                to = LocalDate.parse(toRaw, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-                toHasTime = false;
-            }
-
-            t = new Event(desc, from, fromHasTime, to, toHasTime);
-            break;
-
-        default:
-            throw new IllegalArgumentException("Unknown duke.task type: " + type);
-        }
+        TaskType taskType = TaskType.fromStorageCode(typeCode);
+        Task task = createTaskByType(taskType, desc, parts, line);
 
         if (done) {
-            t.mark();
+            task.mark();
         }
 
-        return t;
+        assert task != null : "Created task should not be null";
+        return task;
+    }
+
+    /**
+     * Validates that line parts meet minimum requirements.
+     *
+     * @param parts        The split line parts
+     * @param originalLine The original line for error reporting
+     * @throws IllegalArgumentException if validation fails
+     */
+    private void validateLineParts(String[] parts, String originalLine) {
+        if (parts.length < MINIMUM_PARTS_COUNT) {
+            throw new IllegalArgumentException("Malformed line: " + originalLine);
+        }
+    }
+
+    /**
+     * Converts done flag string to boolean.
+     *
+     * @param doneStr The done flag string
+     * @return true if task is done, false otherwise
+     */
+    private boolean isDoneFromString(String doneStr) {
+        assert DONE_FLAG.equals(doneStr) || NOT_DONE_FLAG.equals(doneStr) :
+                "Done flag must be 0 or 1";
+        return DONE_FLAG.equals(doneStr);
+    }
+
+    /**
+     * Creates a task based on the TaskType enum.
+     *
+     * @param type         The TaskType enum value
+     * @param desc         The task description
+     * @param parts        The parsed line parts
+     * @param originalLine The original line for error reporting
+     * @return The created Task object
+     */
+    private Task createTaskByType(TaskType type, String desc, String[] parts, String originalLine) {
+        return switch (type) {
+            case TODO -> new Todo(desc);
+            case DEADLINE -> createDeadlineTask(desc, parts, originalLine);
+            case EVENT -> createEventTask(desc, parts, originalLine);
+        };
+    }
+
+    /**
+     * Creates a Deadline task from parsed parts.
+     */
+    private Task createDeadlineTask(String desc, String[] parts, String originalLine) {
+        if (parts.length < DEADLINE_PARTS_COUNT) {
+            throw new IllegalArgumentException("Missing deadline date: " + originalLine);
+        }
+
+        String byRaw = parts[3].trim();
+        LocalDateTime by = parseStorageDateTime(byRaw);
+        boolean hasTime = hasTimeComponent(byRaw);
+
+        return new Deadline(desc, by, hasTime);
+    }
+
+    /**
+     * Creates an Event task from parsed parts.
+     */
+    private Task createEventTask(String desc, String[] parts, String originalLine) {
+        if (parts.length < EVENT_PARTS_COUNT) {
+            throw new IllegalArgumentException("Missing event dates: " + originalLine);
+        }
+
+        String fromRaw = parts[3].trim();
+        String toRaw = parts[4].trim();
+
+        LocalDateTime from = parseStorageDateTime(fromRaw);
+        LocalDateTime to = parseStorageDateTime(toRaw);
+        boolean fromHasTime = hasTimeComponent(fromRaw);
+        boolean toHasTime = hasTimeComponent(toRaw);
+
+        return new Event(desc, from, fromHasTime, to, toHasTime);
+    }
+
+    /**
+     * Parses a date/time string from storage format.
+     *
+     * @param dateTimeStr The date/time string
+     * @return Parsed LocalDateTime
+     */
+    private LocalDateTime parseStorageDateTime(String dateTimeStr) {
+        boolean hasTime = hasTimeComponent(dateTimeStr);
+        if (hasTime) {
+            return LocalDateTime.parse(dateTimeStr, STORAGE_DATETIME_FORMAT);
+        } else {
+            return LocalDate.parse(dateTimeStr, STORAGE_DATE_FORMAT).atStartOfDay();
+        }
+    }
+
+    /**
+     * Checks if a date/time string includes time component.
+     *
+     * @param dateTimeStr The date/time string
+     * @return true if includes time, false otherwise
+     */
+    private boolean hasTimeComponent(String dateTimeStr) {
+        return dateTimeStr.contains(TIME_INDICATOR);
     }
 
     /**
