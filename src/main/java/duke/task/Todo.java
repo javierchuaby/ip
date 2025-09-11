@@ -16,6 +16,11 @@ public class Todo extends Task {
         super(description);
     }
 
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.TODO;
+    }
+
     /**
      * Returns the string representation of the todo task.
      * Format: [T] [status] description

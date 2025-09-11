@@ -67,6 +67,11 @@ public class Deadline extends Task {
         return DateTimeUtil.toStorageString(by, hasTime);
     }
 
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.DEADLINE;
+    }
+
     /**
      * Returns the string representation of the deadline task.
      * Format: [D] [status] description (by: formatted_date_time)
