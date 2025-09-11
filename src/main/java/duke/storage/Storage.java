@@ -52,10 +52,20 @@ public class Storage {
         this.dataDir = (parent != null) ? parent : Paths.get(".");
     }
 
+    /**
+     * Creates a Storage instance with the default file path "data/duke.txt".
+     */
     public Storage() {
         this("data/duke.txt");
     }
 
+    /**
+     * Loads tasks from the storage file.
+     * Creates an empty list if the file doesn't exist.
+     * Handles corrupted files by backing them up and returning empty list.
+     *
+     * @return List of loaded Task objects
+     */
     public List<Task> load() {
         ensureDataDir();
         if (!Files.exists(dataFile)) {
@@ -81,10 +91,19 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves the list of tasks to storage using atomic file operations.
+     * Writes to a temporary file first, then moves it to the final location.
+     *
+     * @param tasks The list of Task objects to save
+     */
     public void save(List<Task> tasks) {
         assert tasks != null : "Task list cannot be null";
 
         ensureDataDir();
+
+        assert Files.exists(dataDir) : "Data directory should exist after ensureDataDir()";
+
         Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
         try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
@@ -109,6 +128,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Ensures the data directory exists, creating it if necessary.
+     *
+     * @throws RuntimeException if the directory cannot be created
+     */
     private void ensureDataDir() {
         try {
             if (!Files.exists(dataDir)) {
@@ -155,7 +179,8 @@ public class Storage {
      * @throws IllegalArgumentException if the line format is invalid
      */
     private Task parseLine(String line) {
-        assert line != null && !line.trim().isEmpty() : "Line cannot be null or empty";
+        assert line != null : "Line cannot be null";
+        assert !line.trim().isEmpty() : "Line cannot be empty";
 
         String[] parts = line.split("\t");
         validateLineParts(parts, line);

@@ -133,6 +133,7 @@ public final class DateTimeUtil {
 
         // Try date-only patterns
         for (DateTimeFormatter f : DATE_PATTERNS) {
+            assert f != null : "Formatter should not be null";
             try {
                 LocalDate d = LocalDate.parse(s, f);
                 // If no year specified, default to current year
