@@ -95,7 +95,12 @@ public class Storage {
      * @param tasks The list of Task objects to save
      */
     public void save(List<Task> tasks) {
+        assert tasks != null : "Task list cannot be null";
+
         ensureDataDir();
+
+        assert Files.exists(dataDir) : "Data directory should exist after ensureDataDir()";
+
         Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
 
         try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
@@ -167,6 +172,9 @@ public class Storage {
      * @throws IllegalArgumentException if the line format is invalid
      */
     private Task parseLine(String line) {
+        assert line != null : "Line cannot be null";
+        assert !line.trim().isEmpty() : "Line cannot be empty";
+
         String[] parts = line.split("\t");
         if (parts.length < 3) {
             throw new IllegalArgumentException("Malformed line: " + line);
