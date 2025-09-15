@@ -1,39 +1,266 @@
-# Duke project template
+# Mr Moon - Your Personal Task Manager
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.
+**A powerful and intuitive Java-based task management application with dual CLI/GUI interface support**
 
-## Setting up in Intellij
 
-Prerequisites: JDK 17, update Intellij to the most recent version.
+Mr Moon is a comprehensive task management application that bridges the gap between command-line efficiency and graphical user experience. Built with Java 17 and JavaFX, it provides seamless task organization with persistent storage and intelligent date parsing.
 
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 17** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Duke.java` file, right-click it, and choose `Run Duke.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
+
+
+## ✨ Key Features
+
+### **Task Management**
+- **Todo Tasks**: Simple task tracking with descriptions
+- **Deadline Tasks**: Time-sensitive tasks with due dates  
+- **Event Tasks**: Scheduled activities with start and end times
+- **Smart Updates**: Modify task descriptions and dates dynamically
+
+### **Dual Interface Support**
+- **CLI Mode**: Terminal-based interface for power users
+- **GUI Mode**: JavaFX-powered graphical interface for intuitive interaction
+- **Seamless Switching**: Choose your preferred interaction method
+
+### **Advanced Functionality**
+- **Flexible Date Parsing**: Natural language date input support
+- **Persistent Storage**: Automatic file-based task preservation
+- **Search Capabilities**: Find tasks by keywords instantly
+- **Bulk Operations**: Clear all tasks with confirmation prompts
+
+
+
+## 🚀 Quick Start
+
+### **Prerequisites**
+- **Java 17** or higher
+- **Gradle** (included via wrapper)
+- **JavaFX Runtime** (for GUI mode)
+
+### **Installation**
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd ip
    ```
-   Hello from
-    ____        _        
-   |  _ \ _   _| | _____ 
-   | | | | | | | |/ / _ \
-   | |_| | |_| |   <  __/
-   |____/ \__,_|_|\_\___|
+
+2. **Build the project**
+   ```bash
+   ./gradlew build
    ```
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+3. **Run the application**
+
+   **GUI Mode (Recommended)**
+   ```bash
+   ./gradlew run
+   ```
+
+   **CLI Mode**
+   ```bash
+   java -cp build/classes/java/main duke.MrMoon
+   ```
+
+### **Platform-Specific Commands**
+
+**Windows:**
+```batch
+gradlew.bat run
+```
+
+**macOS/Linux:**
+```bash
+./gradlew run
+```
 
 
-## Installation
+## 📖 Usage Guide
 
-### Download and Run
-1. Go to [Releases](https://github.com/yourusername/yourrepo/releases)
-2. Download the latest `duke.jar` file
-3. Place it in an empty folder
-4. Open terminal in that folder
-5. Run: `java -jar "duke.jar"`
+### **Core Commands**
 
-### Requirements
-- Java 11 or higher
+| Command | Description | Example |
+|---------|-------------|---------|
+| `todo <description>` | Create a simple task | `todo read book` |
+| `deadline <description> /by <date>` | Create deadline task | `deadline submit assignment /by 2023-10-15 2359` |
+| `event <description> /from <date> /to <date>` | Create event task | `event project meeting /from 2023-10-15 1400 /to 1600` |
+| `list` | Display all tasks | `list` |
+| `mark <index>` | Mark task as completed | `mark 1` |
+| `unmark <index>` | Mark task as incomplete | `unmark 1` |
+| `delete <index>` | Remove task | `delete 1` |
+| `update <index>` | Modify existing task | `update 1` |
+| `find <keyword>` | Search tasks | `find meeting` |
+| `clear` | Remove all tasks | `clear` |
+| `bye` | Exit application | `bye` |
+
+### **Flexible Date Formats**
+
+Mr. Moon supports multiple date input formats :
+
+- **ISO Format**: `2023-10-15`
+- **Standard Format**: `15/10/2023`
+- **Natural Language**: `Oct 15 2023`
+- **With Time**: `2023-10-15 1400`
+- **12-Hour Format**: `15/10/2023 2:00pm`
+- **Relative Dates**: `today`, `tomorrow`, `next Monday`
+
+### **Task Update Process**
+
+When using the `update` command:
+1. **Select Update Type**: Choose description (`1` or `rename`) or date (`2` or `edit date`)
+2. **Enter New Values**: Follow guided prompts for input
+3. **Confirmation**: Review updated task details
+
+
+
+## 🛠️ Development
+
+### **Project Structure**
+
+```
+src/
+├── main/
+│   ├── java/duke/
+│   │   ├── MrMoon.java          # CLI entry point
+│   │   ├── command/             # Command implementations  
+│   │   ├── gui/                 # JavaFX components
+│   │   │   ├── Launcher.java    # GUI launcher
+│   │   │   └── Main.java        # JavaFX application
+│   │   ├── parser/              # Input parsing logic
+│   │   ├── storage/             # File persistence layer
+│   │   ├── task/                # Task type definitions
+│   │   ├── ui/                  # User interface handlers
+│   │   └── util/                # Utility classes
+│   └── resources/               # GUI assets (FXML, CSS)
+└── test/                        # Unit test suite
+```
+
+### **Build Commands**
+
+**Compile and Build:**
+```bash
+./gradlew build
+```
+
+**Run Tests:**
+```bash
+./gradlew test
+```
+
+**Create JAR:**
+```bash
+./gradlew shadowJar
+java -jar build/libs/duke.jar
+```
+
+**Code Quality:**
+```bash
+./gradlew spotlessApply    # Format code
+./gradlew checkstyleMain   # Style validation
+```
+
+
+
+## 📊 Sample Session
+
+```
+Hello! I'm Mr. Moon
+What can I do for you?
+
+>> todo read book
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+
+>> deadline submit report /by 2023-10-15 2359
+Got it. I've added this task:
+  [D][ ] submit report (by: Oct 15 2023 11:59 PM)
+Now you have 2 tasks in the list.
+
+>> list
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] submit report (by: Oct 15 2023 11:59 PM)
+
+>> mark 1
+Nice! I've marked this task as done:
+  [T][X] read book
+
+>> bye
+Bye. Hope to see you again soon!
+```
+
+
+## 💾 Data Storage
+
+### **Storage Configuration**
+- **Default Location**: `data/duke.txt`
+- **Custom Location**: Specify as command-line argument
+- **Format**: Plain text serialization
+- **Auto-Creation**: Directories and files created automatically
+
+### **Custom Data File**
+```bash
+java -cp build/classes/java/main duke.MrMoon path/to/custom/datafile.txt
+```
+
+
+## 🔧 Troubleshooting
+
+### **Common Issues**
+
+**Java Version Error:**
+```bash
+# Verify Java installation
+java -version
+# Ensure Java 17+ is installed
+```
+
+**Data File Problems:**
+- Delete `data/duke.txt` to reset storage
+- Verify file system permissions
+- Check directory structure integrity
+
+
+## 🧪 Testing
+
+### **Running Tests**
+```bash
+./gradlew test                    # All tests
+./gradlew test --tests "*.TaskTest"  # Specific test class
+```
+
+### **Test Coverage**
+- Unit tests for core functionality
+- Integration tests for file operations
+- GUI component testing with JavaFX
+
+
+## 🤝 Contributing
+
+### **Development Guidelines**
+1. **Code Style**: Follow established Java conventions
+2. **Testing**: Ensure all tests pass before submission
+3. **Documentation**: Update README for new features
+4. **Build Verification**: Run `./gradlew build` successfully
+
+### **Contribution Process**
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/new-feature`)
+3. Commit changes (`git commit -m 'Add new feature'`)
+4. Push branch (`git push origin feature/new-feature`)
+5. Open Pull Request
+
+
+## 📄 License
+
+This project is developed as an educational application for learning Java and software engineering principles.
+
+
+## 🆘 Support
+
+### **Getting Help**
+- Use `help` command within the application
+- Review troubleshooting section above
+- Check sample usage examples
+- Examine project structure documentation
+
+**Built with Java 17, JavaFX, and Gradle** 🚀
