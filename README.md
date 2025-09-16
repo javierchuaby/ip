@@ -1,6 +1,6 @@
 # Mr Moon - Your Personal Task Manager
 
-**A powerful and intuitive Java-based task management application with dual CLI/GUI interface support**
+**A Java-based task management application with dual CLI/GUI interface support**
 
 
 Mr Moon is a comprehensive task management application that bridges the gap between command-line efficiency and graphical user experience. Built with Java 17 and JavaFX, it provides seamless task organization with persistent storage and intelligent date parsing.
