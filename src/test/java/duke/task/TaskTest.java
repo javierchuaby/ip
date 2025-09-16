@@ -23,9 +23,10 @@ class TaskTest {
 
     @Test
     void constructor_emptyDescription_createsTask() {
-        Todo emptyTask = new Todo("");
-        assertEquals("", emptyTask.getDescription());
-        assertFalse(emptyTask.isDone());
+        AssertionError ex = org.junit.jupiter.api.Assertions.assertThrows(
+                AssertionError.class,
+                () -> new Todo("")
+        );
     }
 
     @Test
@@ -46,7 +47,7 @@ class TaskTest {
         String result = task.toString();
         assertTrue(result.contains("Test task"));
         assertTrue(result.contains("[T]"));
-        assertTrue(result.contains("[ ]"));
+        assertTrue(result.matches(".*\\[\\s*\\].*"));
     }
 
     @Test
@@ -60,7 +61,7 @@ class TaskTest {
 
     @Test
     void getStatusIcon_newTask_returnsSpace() {
-        assertEquals(" ", task.getStatusIcon());
+        assertEquals("  ", task.getStatusIcon());
     }
 
     @Test

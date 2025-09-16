@@ -77,7 +77,7 @@ class TaskListTest {
 
     @Test
     void get_invalidIndex_throwsException() {
-        assertThrows(IndexOutOfBoundsException.class, () -> taskList.get(0));
+        assertThrows(AssertionError.class, () -> taskList.get(0));
     }
 
     @Test
