@@ -1,8 +1,8 @@
 # Mr Moon - Your Personal Task Manager
 
-**A Java-based task management application with dual CLI/GUI interface support**
+MrMoon is a sophisticated task management application built with Java and JavaFX that helps you organize your daily activities.
 
-MrMoon is a sophisticated task management application built with Java and JavaFX that helps you organize your daily activities through both command-line and graphical interfaces.
+<br/>
 
 ## ✨ Key Features
 
@@ -28,6 +28,8 @@ MrMoon is a sophisticated task management application built with Java and JavaFX
 - **Search Capabilities**: Find tasks by keywords instantly
 - **Bulk Operations**: Clear all tasks with confirmation prompts
 
+<br/>
+
 ## 🚀 Quick Start
 
 ### **Prerequisites**
@@ -38,7 +40,7 @@ MrMoon is a sophisticated task management application built with Java and JavaFX
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:javierchuaby/ip.git
    cd ip
    ```
 
@@ -53,6 +55,8 @@ MrMoon is a sophisticated task management application built with Java and JavaFX
    ```bash
    ./gradlew run
    ```
+
+<br/>
 
 ## 📖 Usage Guide
 
@@ -73,7 +77,7 @@ MrMoon is a sophisticated task management application built with Java and JavaFX
 | `clear` | Remove all tasks | `clear` |
 | `bye` | Exit application | `bye` |
 
-
+<br/>
 
 ## 📁 Project Structure
 
@@ -93,12 +97,16 @@ src/
 └── test/                        # Unit test suite
 ```
 
+<br/>
+
 ## 🛠️ Technical Details
 ### Architecture
 - **Command Pattern**: Each user command is encapsulated as a Command object
 - **MVC Architecture**: Separation of model (tasks), view (UI), and controller (MrMoon)
 - **Parser System**: Robust input parsing with error handling
 - **Storage System**: Automatic task persistence to local files
+
+<br/>
 
 ## 🧪 **Build and Test**
 
@@ -117,6 +125,7 @@ src/
 ./gradlew checkstyleMain   # Style validation
 ```
 
+<br/>
 
 ## 💾 Data Storage
 
@@ -124,6 +133,8 @@ src/
 - **Default Location**: `.data/duke.txt`
 - **Format**: Plain text serialization
 - **Auto-Creation**: Directories and files created automatically
+
+<br/>
 
 ## 🔧 Troubleshooting
 
@@ -141,11 +152,13 @@ java -version
 - Verify file system permissions
 - Check directory structure integrity
 
+<br/>
 
 ## 📄 License
 
 This project is developed as an educational application for learning Java and software engineering principles.
 
----
+<br/>
+<br/>
 
 **Built with Java 17, JavaFX, and Gradle** 🚀
