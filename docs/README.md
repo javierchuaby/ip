@@ -24,7 +24,6 @@ java -cp MrMoon.jar duke.MrMoon
 - "Java not found" error: Install Java 17+ from oracle.com
 - Permission errors: Run `chmod +x MrMoon.jar` (Mac/Linux)
 
----
 
 ## 📋 **Command Reference** *(Your Main Navigation)*
 
@@ -47,7 +46,6 @@ java -cp MrMoon.jar duke.MrMoon
 | `clear`          | `clear`                                | Delete all tasks                             |
 | `bye`            | `bye`                                  | Exit application                             |
 
----
 
 ## 📝 **Creating Tasks**
 
@@ -86,7 +84,6 @@ event vacation /from 25/12/2024 /to 30/12/2024
 - `1400` (24-hour format)
 - Add time after date: `25/12/2024 1400`
 
----
 
 ## 🎯 **Managing Tasks**
 
@@ -109,7 +106,6 @@ Use `update [task number]` for step-by-step editing:
 - `delete 3` - Remove task 3
 - `clear` - Remove all tasks (asks for confirmation)
 
----
 
 ## 💾 **Your Data**
 
@@ -119,7 +115,6 @@ Use `update [task number]` for step-by-step editing:
 
 **Backup:** Copy the `data` folder to keep your tasks safe
 
----
 
 ## ❓ **Troubleshooting**
 
@@ -135,7 +130,6 @@ Use `update [task number]` for step-by-step editing:
 **Data not saving**
 → Make sure app has write permissions in its folder
 
----
 
 ## 💡 **Tips**
 
@@ -144,6 +138,5 @@ Use `update [task number]` for step-by-step editing:
 - **Check your agenda** with `on [today's date]` each morning
 - **Times are optional** - just dates work fine for most tasks
 
----
 
 **Happy task managing with Mr Moon! 🌙**
