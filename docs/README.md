@@ -5,9 +5,9 @@
 ## 🚀 **Quick Start**
 
 ### **Installation**
-1. **Download:** Get the latest `MrMoon.jar` from the releases page
+1. **Download:** Get the latest `duke.jar` from the releases page
 2. **Requirements:** Java 17 or higher
-3. **Run:** Double-click `MrMoon.jar` or use command line
+3. **Run:** Double-click `duke.jar` or use command line
 
 ### **Running Mr Moon**
 ```
@@ -22,7 +22,7 @@ java -cp MrMoon.jar duke.MrMoon
 **Troubleshooting:**
 - If double-click doesn't work: Right-click → "Open with Java"
 - "Java not found" error: Install Java 17+ from oracle.com
-- Permission errors: Run `chmod +x MrMoon.jar` (Mac/Linux)
+- Permission errors: Run `chmod +x duke.jar` (Mac/Linux)
 
 
 ## 📋 **Command Reference** *(Your Main Navigation)*
@@ -32,7 +32,7 @@ java -cp MrMoon.jar duke.MrMoon
 | **Create Tasks** |
 | `todo`           | `todo [description]`                   | `todo Buy milk`                              |
 | `deadline`       | `deadline [task] /by [date]`           | `deadline Report /by 2024-12-25`             |
-| `event`          | `event [task] /from [date] /to [date]` | `event Meeting /from 2024-12-20 2pm /to 4pm` |
+| `event`          | `event [task] /from [date] /to [date]` | `event Meeting /from 2024-12-20 1400 /to 1600` |
 | **Manage Tasks** |
 | `list`           | `list`                                 | Shows all your tasks                         |
 | `mark`           | `mark [number]`                        | `mark 2` (completes task 2)                  |
@@ -104,14 +104,12 @@ Use `update [task number]` for step-by-step editing:
 
 ### **Delete Tasks**
 - `delete 3` - Remove task 3
-- `clear` - Remove all tasks (asks for confirmation)
+- `clear` - Remove all tasks
 
 
 ## 💾 **Your Data**
 
 **Automatic Save:** Tasks save to `data/duke.txt` automatically
-
-**Custom Storage:** `java -jar duke.jar [your-file-path]`
 
 **Backup:** Copy the `data` folder to keep your tasks safe
 
