@@ -10,7 +10,7 @@
 3. **Run:** Double-click `MrMoon.jar` or use command line
 
 ### **Running Mr Moon**
-```shell script
+```
 # GUI (Recommended)
 java -jar MrMoon.jar
 
@@ -28,24 +28,24 @@ java -cp MrMoon.jar duke.MrMoon
 
 ## 📋 **Command Reference** *(Your Main Navigation)*
 
-| Command | What You Type | Example |
-|---------|---------------|---------|
+| Command          | What You Type                          | Example                                      |
+|------------------|----------------------------------------|----------------------------------------------|
 | **Create Tasks** |
-| `todo` | `todo [description]` | `todo Buy milk` |
-| `deadline` | `deadline [task] /by [date]` | `deadline Report /by 2024-12-25` |
-| `event` | `event [task] /from [date] /to [date]` | `event Meeting /from 2024-12-20 2pm /to 4pm` |
+| `todo`           | `todo [description]`                   | `todo Buy milk`                              |
+| `deadline`       | `deadline [task] /by [date]`           | `deadline Report /by 2024-12-25`             |
+| `event`          | `event [task] /from [date] /to [date]` | `event Meeting /from 2024-12-20 2pm /to 4pm` |
 | **Manage Tasks** |
-| `list` | `list` | Shows all your tasks |
-| `mark` | `mark [number]` | `mark 2` (completes task 2) |
-| `unmark` | `unmark [number]` | `unmark 2` (uncompletes task 2) |
-| `delete` | `delete [number]` | `delete 3` (removes task 3) |
-| **Find & View** |
-| `find` | `find [word]` | `find meeting` |
-| `on` | `on [date]` | `on 2024-12-25` (agenda view) |
-| **Advanced** |
-| `update` | `update [number]` | Interactive task editing |
-| `clear` | `clear` | Delete all tasks |
-| `bye` | `bye` | Exit application |
+| `list`           | `list`                                 | Shows all your tasks                         |
+| `mark`           | `mark [number]`                        | `mark 2` (completes task 2)                  |
+| `unmark`         | `unmark [number]`                      | `unmark 2` (uncompletes task 2)              |
+| `delete`         | `delete [number]`                      | `delete 3` (removes task 3)                  |
+| **Find & View**  |
+| `find`           | `find [word]`                          | `find meeting`                               |
+| `on`             | `on [date]`                            | `on 2024-12-25` (agenda view)                |
+| **Advanced**     |
+| `update`         | `update [number]`                      | Interactive task editing                     |
+| `clear`          | `clear`                                | Delete all tasks                             |
+| `bye`            | `bye`                                  | Exit application                             |
 
 ---
 
