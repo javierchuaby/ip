@@ -2,23 +2,25 @@
 
 **A Java-based task management application with dual CLI/GUI interface support**
 
-
-Mr Moon is a comprehensive task management application that bridges the gap between command-line efficiency and graphical user experience. Built with Java 17 and JavaFX, it provides seamless task organization with persistent storage and intelligent date parsing.
-
-
+MrMoon is a sophisticated task management application built with Java and JavaFX that helps you organize your daily activities through both command-line and graphical interfaces.
 
 ## ✨ Key Features
 
 ### **Task Management**
-- **Todo Tasks**: Simple task tracking with descriptions
-- **Deadline Tasks**: Time-sensitive tasks with due dates  
-- **Event Tasks**: Scheduled activities with start and end times
-- **Smart Updates**: Modify task descriptions and dates dynamically
+- **Todo Tasks**: Simple tasks with descriptions
+- **Deadline Tasks**: Tasks with due dates 
+- **Event Tasks**: Tasks with start and end dates/times
 
-### **Dual Interface Support**
-- **CLI Mode**: Terminal-based interface for power users
-- **GUI Mode**: JavaFX-powered graphical interface for intuitive interaction
-- **Seamless Switching**: Choose your preferred interaction method
+
+### **Task Operations**
+- **List Tasks**: View all your tasks with their completion status
+- **Mark/Unmark**: Toggle task completion status
+- **Delete Tasks**: Remove tasks by their index number
+- **Find Tasks**: Search tasks by keywords
+- **Agenda View**: View tasks scheduled for specific date (`on <date>`)
+- **Clear Tasks**: Remove all tasks at once with confirmation prompt
+- **Update Task**: Modify task descriptions and dates dynamically
+
 
 ### **Advanced Functionality**
 - **Flexible Date Parsing**: Natural language date input support
@@ -26,14 +28,11 @@ Mr Moon is a comprehensive task management application that bridges the gap betw
 - **Search Capabilities**: Find tasks by keywords instantly
 - **Bulk Operations**: Clear all tasks with confirmation prompts
 
-
-
 ## 🚀 Quick Start
 
 ### **Prerequisites**
 - **Java 17** or higher
 - **Gradle** (included via wrapper)
-- **JavaFX Runtime** (for GUI mode)
 
 ### **Installation**
 
@@ -50,28 +49,10 @@ Mr Moon is a comprehensive task management application that bridges the gap betw
 
 3. **Run the application**
 
-   **GUI Mode (Recommended)**
+   **GUI Mode**
    ```bash
    ./gradlew run
    ```
-
-   **CLI Mode**
-   ```bash
-   java -cp build/classes/java/main duke.MrMoon
-   ```
-
-### **Platform-Specific Commands**
-
-**Windows:**
-```batch
-gradlew.bat run
-```
-
-**macOS/Linux:**
-```bash
-./gradlew run
-```
-
 
 ## 📖 Usage Guide
 
@@ -87,33 +68,14 @@ gradlew.bat run
 | `unmark <index>` | Mark task as incomplete | `unmark 1` |
 | `delete <index>` | Remove task | `delete 1` |
 | `update <index>` | Modify existing task | `update 1` |
+|`on <date>` | View tasks for specific date | `on 20 Sep 2025` |
 | `find <keyword>` | Search tasks | `find meeting` |
 | `clear` | Remove all tasks | `clear` |
 | `bye` | Exit application | `bye` |
 
-### **Flexible Date Formats**
-
-Mr. Moon supports multiple date input formats :
-
-- **ISO Format**: `2023-10-15`
-- **Standard Format**: `15/10/2023`
-- **Natural Language**: `Oct 15 2023`
-- **With Time**: `2023-10-15 1400`
-- **12-Hour Format**: `15/10/2023 2:00pm`
-- **Relative Dates**: `today`, `tomorrow`, `next Monday`
-
-### **Task Update Process**
-
-When using the `update` command:
-1. **Select Update Type**: Choose description (`1` or `rename`) or date (`2` or `edit date`)
-2. **Enter New Values**: Follow guided prompts for input
-3. **Confirmation**: Review updated task details
 
 
-
-## 🛠️ Development
-
-### **Project Structure**
+## 📁 Project Structure
 
 ```
 src/
@@ -131,12 +93,14 @@ src/
 └── test/                        # Unit test suite
 ```
 
-### **Build Commands**
+## 🛠️ Technical Details
+### Architecture
+- **Command Pattern**: Each user command is encapsulated as a Command object
+- **MVC Architecture**: Separation of model (tasks), view (UI), and controller (MrMoon)
+- **Parser System**: Robust input parsing with error handling
+- **Storage System**: Automatic task persistence to local files
 
-**Compile and Build:**
-```bash
-./gradlew build
-```
+## 🧪 **Build and Test**
 
 **Run Tests:**
 ```bash
@@ -146,60 +110,20 @@ src/
 **Create JAR:**
 ```bash
 ./gradlew shadowJar
-java -jar build/libs/duke.jar
 ```
 
-**Code Quality:**
+**Run code quality checks:**
 ```bash
-./gradlew spotlessApply    # Format code
 ./gradlew checkstyleMain   # Style validation
-```
-
-
-
-## 📊 Sample Session
-
-```
-Hello! I'm Mr. Moon
-What can I do for you?
-
->> todo read book
-Got it. I've added this task:
-  [T][ ] read book
-Now you have 1 tasks in the list.
-
->> deadline submit report /by 2023-10-15 2359
-Got it. I've added this task:
-  [D][ ] submit report (by: Oct 15 2023 11:59 PM)
-Now you have 2 tasks in the list.
-
->> list
-Here are the tasks in your list:
-1.[T][ ] read book
-2.[D][ ] submit report (by: Oct 15 2023 11:59 PM)
-
->> mark 1
-Nice! I've marked this task as done:
-  [T][X] read book
-
->> bye
-Bye. Hope to see you again soon!
 ```
 
 
 ## 💾 Data Storage
 
 ### **Storage Configuration**
-- **Default Location**: `data/duke.txt`
-- **Custom Location**: Specify as command-line argument
+- **Default Location**: `.data/duke.txt`
 - **Format**: Plain text serialization
 - **Auto-Creation**: Directories and files created automatically
-
-### **Custom Data File**
-```bash
-java -cp build/classes/java/main duke.MrMoon path/to/custom/datafile.txt
-```
-
 
 ## 🔧 Troubleshooting
 
@@ -213,52 +137,15 @@ java -version
 ```
 
 **Data File Problems:**
-- Delete `data/duke.txt` to reset storage
+- Delete `.data/duke.txt` to reset storage
 - Verify file system permissions
 - Check directory structure integrity
-
-
-## 🧪 Testing
-
-### **Running Tests**
-```bash
-./gradlew test                    # All tests
-./gradlew test --tests "*.TaskTest"  # Specific test class
-```
-
-### **Test Coverage**
-- Unit tests for core functionality
-- Integration tests for file operations
-- GUI component testing with JavaFX
-
-
-## 🤝 Contributing
-
-### **Development Guidelines**
-1. **Code Style**: Follow established Java conventions
-2. **Testing**: Ensure all tests pass before submission
-3. **Documentation**: Update README for new features
-4. **Build Verification**: Run `./gradlew build` successfully
-
-### **Contribution Process**
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/new-feature`)
-3. Commit changes (`git commit -m 'Add new feature'`)
-4. Push branch (`git push origin feature/new-feature`)
-5. Open Pull Request
 
 
 ## 📄 License
 
 This project is developed as an educational application for learning Java and software engineering principles.
 
-
-## 🆘 Support
-
-### **Getting Help**
-- Use `help` command within the application
-- Review troubleshooting section above
-- Check sample usage examples
-- Examine project structure documentation
+---
 
 **Built with Java 17, JavaFX, and Gradle** 🚀
