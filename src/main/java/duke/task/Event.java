@@ -5,9 +5,8 @@ import java.time.LocalDateTime;
 import duke.util.DateTimeUtil;
 
 /**
- * Represents an event task with start and end date/time.
- * An event task has a description and occurs during a specific time period.
- * Extends the Task class with start and end date/time functionality.
+ * Represents an event task with start and end date/time. An event task has a description and occurs
+ * during a specific time period. Extends the Task class with start and end date/time functionality.
  */
 public class Event extends Task {
 
@@ -41,11 +40,11 @@ public class Event extends Task {
      * @param toHasTime   true if end includes specific time, false for date only
      */
     public Event(
-            String description,
-            LocalDateTime from,
-            boolean fromHasTime,
-            LocalDateTime to,
-            boolean toHasTime) {
+        String description,
+        LocalDateTime from,
+        boolean fromHasTime,
+        LocalDateTime to,
+        boolean toHasTime) {
         super(description);
         this.from = from;
         this.to = to;
@@ -54,8 +53,8 @@ public class Event extends Task {
     }
 
     /**
-     * Constructs an Event task by parsing start and end date/time strings.
-     * Uses DateTimeUtil to parse flexible date/time formats.
+     * Constructs an Event task by parsing start and end date/time strings. Uses DateTimeUtil to
+     * parse flexible date/time formats.
      *
      * @param description The event description
      * @param fromString  The start date/time as a string to be parsed
@@ -114,8 +113,8 @@ public class Event extends Task {
     }
 
     /**
-     * Returns the string representation of the event task.
-     * Format: [E] [status] description (from: start_time, to: end_time)
+     * Returns the string representation of the event task. Format: [E] [status] description (from:
+     * start_time, to: end_time)
      *
      * @return A formatted string describing the event task
      */
@@ -124,13 +123,13 @@ public class Event extends Task {
         String fromStr = DateTimeUtil.toPrettyString(from, fromHasTime);
         String toStr = DateTimeUtil.toPrettyString(to, toHasTime);
         return "[E] ["
-                + getStatusIcon()
-                + "] "
-                + description
-                + " (from: "
-                + fromStr
-                + ", to: "
-                + toStr
-                + ")";
+            + getStatusIcon()
+            + "] "
+            + description
+            + " (from: "
+            + fromStr
+            + ", to: "
+            + toStr
+            + ")";
     }
 }

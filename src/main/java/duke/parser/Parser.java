@@ -16,10 +16,9 @@ import duke.command.UnknownCommand;
 import duke.command.UpdateCommand;
 
 /**
- * Parses user input strings into Command objects.
- * Uses constants instead of magic numbers and strings for better maintainability.
- * Responsible for extracting command words and arguments from user input.
- * Provides specialized parsing methods for complex commands like deadline and event.
+ * Parses user input strings into Command objects. Uses constants instead of magic numbers and
+ * strings for better maintainability. Responsible for extracting command words and arguments from
+ * user input. Provides specialized parsing methods for complex commands like deadline and event.
  */
 public class Parser {
     // Command parsing constants
@@ -28,9 +27,9 @@ public class Parser {
     private static final String TO_DELIMITER = "/to";
 
     // Magic number constants for substring operations
-    private static final int BY_OFFSET = 3;     // "/by".length()
-    private static final int FROM_OFFSET = 5;   // "/from".length()
-    private static final int TO_OFFSET = 3;     // "/to".length()
+    private static final int BY_OFFSET = 3; // "/by".length()
+    private static final int FROM_OFFSET = 5; // "/from".length()
+    private static final int TO_OFFSET = 3; // "/to".length()
 
     // Command names
     private static final String CMD_EMPTY = "";
@@ -48,16 +47,16 @@ public class Parser {
     private static final String CMD_UPDATE = "update";
 
     /**
-     * Validates multiple string parts to ensure none are null or empty.
-     * Uses varargs to accept any number of string arguments for validation.
+     * Validates multiple string parts to ensure none are null or empty. Uses varargs to accept any
+     * number of string arguments for validation.
      *
      * @param errorMessage The error message to throw if validation fails
      * @param parts        Variable number of string parts to validate
      * @throws IllegalArgumentException if any part is null, empty, or whitespace-only
      */
     private void validateParts(String errorMessage, String... parts) {
-        assert errorMessage != null && !errorMessage.trim().isEmpty() :
-                "Error message cannot be null or empty";
+        assert errorMessage != null && !errorMessage.trim().isEmpty()
+            : "Error message cannot be null or empty";
 
         for (String part : parts) {
             if (part == null || part.trim().isEmpty()) {
@@ -67,8 +66,8 @@ public class Parser {
     }
 
     /**
-     * Parses a line of user input into the appropriate Command object.
-     * Uses constants instead of magic strings for better maintainability.
+     * Parses a line of user input into the appropriate Command object. Uses constants instead of
+     * magic strings for better maintainability.
      *
      * @param line The raw input command string from the user
      * @return The corresponding Command object to execute
@@ -82,22 +81,36 @@ public class Parser {
         assert cmd != null : "Command word should never be null";
         assert args != null : "Arguments should never be null (can be empty)";
 
-        return switch (cmd) {
-            case CMD_EMPTY -> new EmptyCommand();
-            case CMD_BYE -> new ExitCommand();
-            case CMD_LIST -> new ListCommand();
-            case CMD_TODO -> parseTodoCommand(args, line);
-            case CMD_DEADLINE -> parseDeadlineCommand(args, line);
-            case CMD_EVENT -> parseEventCommand(args, line);
-            case CMD_MARK -> new MarkCommand(parseOneBasedIndex(args), true);
-            case CMD_UNMARK -> new MarkCommand(parseOneBasedIndex(args), false);
-            case CMD_DELETE -> new DeleteCommand(parseOneBasedIndex(args));
-            case CMD_ON -> new AgendaCommand(args);
-            case CMD_CLEAR -> new ClearCommand();
-            case CMD_FIND -> new FindCommand(args);
-            case CMD_UPDATE -> parseUpdateCommand(args, line);
-            default -> new UnknownCommand(line);
-        };
+        switch (cmd) {
+        case CMD_EMPTY:
+            return new EmptyCommand();
+        case CMD_BYE:
+            return new ExitCommand();
+        case CMD_LIST:
+            return new ListCommand();
+        case CMD_TODO:
+            return parseTodoCommand(args, line);
+        case CMD_DEADLINE:
+            return parseDeadlineCommand(args, line);
+        case CMD_EVENT:
+            return parseEventCommand(args, line);
+        case CMD_MARK:
+            return new MarkCommand(parseOneBasedIndex(args), true);
+        case CMD_UNMARK:
+            return new MarkCommand(parseOneBasedIndex(args), false);
+        case CMD_DELETE:
+            return new DeleteCommand(parseOneBasedIndex(args));
+        case CMD_ON:
+            return new AgendaCommand(args);
+        case CMD_CLEAR:
+            return new ClearCommand();
+        case CMD_FIND:
+            return new FindCommand(args);
+        case CMD_UPDATE:
+            return parseUpdateCommand(args, line);
+        default:
+            return new UnknownCommand(line);
+        }
     }
 
     /**
@@ -180,9 +193,8 @@ public class Parser {
     }
 
     /**
-     * Parses deadline command arguments into description and by-date components.
-     * Uses constants instead of magic strings and numbers.
-     * Expects format: "description /by date"
+     * Parses deadline command arguments into description and by-date components. Uses constants
+     * instead of magic strings and numbers. Expects format: "description /by date"
      *
      * @param args The argument string following 'deadline' command
      * @return String array where index 0 is description and index 1 is by-date
@@ -205,9 +217,8 @@ public class Parser {
     }
 
     /**
-     * Parses event command arguments into description, from-date, and to-date.
-     * Uses constants instead of magic strings and numbers.
-     * Expects format: "description /from date /to date"
+     * Parses event command arguments into description, from-date, and to-date. Uses constants
+     * instead of magic strings and numbers. Expects format: "description /from date /to date"
      *
      * @param args The argument string following 'event' command
      * @return String array with description, from-date, and to-date respectively
@@ -226,15 +237,22 @@ public class Parser {
         String fromRaw = args.substring(i + FROM_OFFSET, j).trim();
         String toRaw = args.substring(j + TO_OFFSET).trim();
 
-        validateParts("Usage: event <description> " + FROM_DELIMITER + " <date> " + TO_DELIMITER + " <date>",
-                desc, fromRaw, toRaw);
+        validateParts(
+            "Usage: event <description> "
+                + FROM_DELIMITER
+                + " <date> "
+                + TO_DELIMITER
+                + " <date>",
+            desc,
+            fromRaw,
+            toRaw);
 
         return new String[]{desc, fromRaw, toRaw};
     }
 
     /**
-     * Parses a one-based index from the argument string.
-     * Returns -1 if parsing fails or the string is invalid.
+     * Parses a one-based index from the argument string. Returns -1 if parsing fails or the string
+     * is invalid.
      *
      * @param args The string to parse as an index number
      * @return The parsed one-based index, or -1 if invalid

@@ -4,8 +4,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command for handling unrecognized user input.
- * Displays an error message with the invalid input.
+ * Represents a command for handling unrecognized user input. Displays an error message with the
+ * invalid input.
  */
 public class UnknownCommand implements Command {
     /**

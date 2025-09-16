@@ -5,14 +5,15 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to mark or unmark a task as completed.
- * Changes the completion status of the specified task.
+ * Represents a command to mark or unmark a task as completed. Changes the completion status of the
+ * specified task.
  */
 public class MarkCommand implements Command {
     /**
      * The 1-based index of the task to mark/unmark
      */
     private final int index;
+
     /**
      * Whether to mark (true) or unmark (false) the task
      */
@@ -30,8 +31,8 @@ public class MarkCommand implements Command {
     }
 
     /**
-     * Executes the mark command by changing the completion status of the specified task.
-     * If the index is out of bounds, shows an error message.
+     * Executes the mark command by changing the completion status of the specified task. If the
+     * index is out of bounds, shows an error message.
      *
      * @param tasks The task list containing the task to mark/unmark
      * @param ui    The user interface for displaying results and errors

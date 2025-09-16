@@ -1,9 +1,8 @@
 package duke.task;
 
 /**
- * Represents a simple todo task without any time constraints.
- * A todo task only has a description and completion status.
- * Extends the Task class with basic functionality.
+ * Represents a simple todo task without any time constraints. A todo task only has a description
+ * and completion status. Extends the Task class with basic functionality.
  */
 public class Todo extends Task {
 
@@ -22,8 +21,7 @@ public class Todo extends Task {
     }
 
     /**
-     * Returns the string representation of the todo task.
-     * Format: [T] [status] description
+     * Returns the string representation of the todo task. Format: [T] [status] description
      *
      * @return A formatted string describing the todo task
      */

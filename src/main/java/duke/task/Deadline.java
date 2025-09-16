@@ -5,9 +5,8 @@ import java.time.LocalDateTime;
 import duke.util.DateTimeUtil;
 
 /**
- * Represents a deadline task with a due date and time.
- * A deadline task has a description and a specific due date/time.
- * Extends the Task class with date/time functionality.
+ * Represents a deadline task with a due date and time. A deadline task has a description and a
+ * specific due date/time. Extends the Task class with date/time functionality.
  */
 public class Deadline extends Task {
 
@@ -35,8 +34,8 @@ public class Deadline extends Task {
     }
 
     /**
-     * Constructs a Deadline task by parsing a date/time string.
-     * Uses DateTimeUtil to parse flexible date/time formats.
+     * Constructs a Deadline task by parsing a date/time string. Uses DateTimeUtil to parse flexible
+     * date/time formats.
      *
      * @param description The task description
      * @param byString    The due date/time as a string to be parsed
@@ -73,19 +72,19 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the string representation of the deadline task.
-     * Format: [D] [status] description (by: formatted_date_time)
+     * Returns the string representation of the deadline task. Format: [D] [status] description (by:
+     * formatted_date_time)
      *
      * @return A formatted string describing the deadline task
      */
     @Override
     public String toString() {
         return "[D] ["
-                + getStatusIcon()
-                + "] "
-                + description
-                + " (by: "
-                + DateTimeUtil.toPrettyString(by, hasTime)
-                + ")";
+            + getStatusIcon()
+            + "] "
+            + description
+            + " (by: "
+            + DateTimeUtil.toPrettyString(by, hasTime)
+            + ")";
     }
 }

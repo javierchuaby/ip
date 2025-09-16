@@ -5,8 +5,8 @@ import duke.ui.Ui;
 import duke.util.DateTimeUtil;
 
 /**
- * Represents a command to display tasks scheduled for a specific date.
- * Shows all tasks that are due or scheduled on the given date.
+ * Represents a command to display tasks scheduled for a specific date. Shows all tasks that are due
+ * or scheduled on the given date.
  */
 public class AgendaCommand implements Command {
 
@@ -25,8 +25,8 @@ public class AgendaCommand implements Command {
     }
 
     /**
-     * Executes the agenda command by parsing the date and displaying matching tasks.
-     * If the date input is invalid or empty, shows usage information.
+     * Executes the agenda command by parsing the date and displaying matching tasks. If the date
+     * input is invalid or empty, shows usage information.
      *
      * @param tasks The task list to search through
      * @param ui    The user interface for displaying results

@@ -5,8 +5,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to delete a task from the task list by its index.
- * The task is permanently removed from the list.
+ * Represents a command to delete a task from the task list by its index. The task is permanently
+ * removed from the list.
  */
 public class DeleteCommand implements Command {
     /**
@@ -24,8 +24,8 @@ public class DeleteCommand implements Command {
     }
 
     /**
-     * Executes the delete command by removing the task at the specified index.
-     * If the index is out of bounds, shows an error message.
+     * Executes the delete command by removing the task at the specified index. If the index is out
+     * of bounds, shows an error message.
      *
      * @param tasks The task list to remove the task from
      * @param ui    The user interface for displaying results and errors

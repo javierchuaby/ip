@@ -4,8 +4,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to display all tasks in the task list.
- * Shows the current tasks with their indices and completion status.
+ * Represents a command to display all tasks in the task list. Shows the current tasks with their
+ * indices and completion status.
  */
 public class ListCommand implements Command {
     /**

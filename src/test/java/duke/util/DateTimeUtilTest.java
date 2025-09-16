@@ -17,7 +17,8 @@ class DateTimeUtilTest {
         String validDateTime = "2025-12-25 1800";
 
         assertDoesNotThrow(() -> {
-            DateTimeUtil.ParseResult result = DateTimeUtil.parseLenientResult(validDateTime);
+            DateTimeUtil.ParseResult result =
+                DateTimeUtil.parseLenientResult(validDateTime);
             assertNotNull(result.dt);
             assertTrue(result.hasTime);
         });

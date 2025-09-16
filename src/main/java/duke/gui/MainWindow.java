@@ -1,5 +1,8 @@
 package duke.gui;
 
+import java.util.Objects;
+
+import duke.MrMoon;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,16 +14,21 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import java.util.Objects;
-
-import duke.MrMoon;
-
 /**
- * Controller for the main GUI window of the MrMoon chatbot application.
- * Handles user input, displays chat messages, and manages the application lifecycle.
- * Supports automatic exit functionality and welcome message display.
+ * Controller for the main GUI window of the MrMoon chatbot application. Handles user input,
+ * displays chat messages, and manages the application lifecycle. Supports automatic exit
+ * functionality and welcome message display.
  */
 public class MainWindow extends AnchorPane {
+    private final Image userImage =
+        new Image(
+            Objects.requireNonNull(
+                this.getClass()
+                    .getResourceAsStream("/images/icons8-male-user-480.png")));
+    private final Image mrMoonImage =
+        new Image(
+            Objects.requireNonNull(
+                this.getClass().getResourceAsStream("/images/icons8-user-480.png")));
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -29,13 +37,7 @@ public class MainWindow extends AnchorPane {
     private TextField userInput;
     @FXML
     private Button sendButton;
-
     private MrMoon mrMoon;
-    private final Image userImage = new Image(Objects.requireNonNull(this.getClass()
-            .getResourceAsStream("/images/icons8-male-user-480.png")));
-    private final Image mrMoonImage = new Image(Objects.requireNonNull(this.getClass()
-            .getResourceAsStream("/images/icons8-user-480.png")));
-
     private boolean isExited = false;
 
     private boolean waitingForClearConfirmation = false;
@@ -62,15 +64,14 @@ public class MainWindow extends AnchorPane {
      * Displays the welcome message when the application starts.
      */
     private void showWelcomeMessage() {
-        String welcomeMessage = "Hello! I'm Mr Moon, your personal Task Manager!\nWhat can I do for you?";
-        dialogContainer.getChildren().add(
-                DialogBox.getMrMoonDialog(welcomeMessage, mrMoonImage)
-        );
+        String welcomeMessage =
+            "Hello! I'm Mr Moon, your personal Task Manager!\nWhat can I do for you?";
+        dialogContainer.getChildren().add(DialogBox.getMrMoonDialog(welcomeMessage, mrMoonImage));
     }
 
     /**
-     * Handles user input from the text field and generates appropriate responses.
-     * Manages the chat flow and application exit logic.
+     * Handles user input from the text field and generates appropriate responses. Manages the chat
+     * flow and application exit logic.
      */
     @FXML
     private void handleUserInput() {
@@ -85,10 +86,11 @@ public class MainWindow extends AnchorPane {
 
         if (waitingForClearConfirmation) {
             String response = handleClearConfirmation(input.toLowerCase());
-            dialogContainer.getChildren().addAll(
+            dialogContainer
+                .getChildren()
+                .addAll(
                     DialogBox.getUserDialog(input, userImage),
-                    DialogBox.getMrMoonDialog(response, mrMoonImage)
-            );
+                    DialogBox.getMrMoonDialog(response, mrMoonImage));
             userInput.clear();
             return;
         }
@@ -100,10 +102,11 @@ public class MainWindow extends AnchorPane {
             response = "Are you sure you want to clear all tasks? (yes/no)";
         }
 
-        dialogContainer.getChildren().addAll(
+        dialogContainer
+            .getChildren()
+            .addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getMrMoonDialog(response, mrMoonImage)
-        );
+                DialogBox.getMrMoonDialog(response, mrMoonImage));
         userInput.clear();
 
         if (input.equalsIgnoreCase("bye")) {
@@ -112,17 +115,18 @@ public class MainWindow extends AnchorPane {
             sendButton.setDisable(true);
 
             PauseTransition delay = new PauseTransition(Duration.seconds(5));
-            delay.setOnFinished(event -> {
-                Platform.exit();
-                System.exit(0);
-            });
+            delay.setOnFinished(
+                event -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
             delay.play();
         }
     }
 
     /**
-     * Handles user responses to clear confirmation prompts.
-     * Processes "yes" to clear tasks, "no" to cancel, and asks for clarification otherwise.
+     * Handles user responses to clear confirmation prompts. Processes "yes" to clear tasks, "no" to
+     * cancel, and asks for clarification otherwise.
      */
     private String handleClearConfirmation(String response) {
         switch (response) {

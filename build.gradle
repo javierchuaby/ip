@@ -60,12 +60,6 @@ run{
     standardInput = System.in
 }
 
-spotless {
-    java {
-        googleJavaFormat()
-    }
-}
-
 checkstyle {
     toolVersion = '11.0.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")

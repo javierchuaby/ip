@@ -12,9 +12,9 @@ import duke.util.CommandListingUtil;
 import duke.util.DateTimeUtil;
 
 /**
- * User Interface component handling console input/output operations.
- * Provides formatted output methods for different types of messages and task displays.
- * Uses PrintStream for testability and flexible output redirection.
+ * User Interface component handling console input/output operations. Provides formatted output
+ * methods for different types of messages and task displays. Uses PrintStream for testability and
+ * flexible output redirection.
  */
 public class Ui {
     private final PrintStream out;
@@ -56,8 +56,8 @@ public class Ui {
     }
 
     /**
-     * Prints an error message for unknown user commands.
-     * Includes a helpful list of available commands.
+     * Prints an error message for unknown user commands. Includes a helpful list of available
+     * commands.
      *
      * @param input The unrecognized command string from the user
      */
@@ -93,8 +93,8 @@ public class Ui {
     }
 
     /**
-     * Prints the agenda (list of tasks) for a specific date.
-     * Shows task indices from the main list for user reference.
+     * Prints the agenda (list of tasks) for a specific date. Shows task indices from the main list
+     * for user reference.
      *
      * @param date     The date to display tasks for
      * @param items    The list of tasks occurring on the specified date
@@ -182,7 +182,8 @@ public class Ui {
      */
     public void printMarked(Task task, boolean mark) {
         printLine();
-        out.println(mark
+        out.println(
+            mark
                 ? "    " + "Nice! I've marked this duke.task as done!"
                 : "    " + "Nice! I've marked this duke.task as not done yet!");
         out.println(" " + task.toString());
@@ -261,8 +262,8 @@ public class Ui {
     }
 
     /**
-     * Prints the results of a find operation.
-     * Shows all matching tasks with their indices from the main list.
+     * Prints the results of a find operation. Shows all matching tasks with their indices from the
+     * main list.
      *
      * @param keyword The keyword that was searched for
      * @param matches The list of tasks that matched the keyword
@@ -305,6 +306,8 @@ public class Ui {
             out.println(" 2. Edit date");
             out.println(" Please choose (1/2):");
             break;
+        default:
+            throw new IllegalArgumentException("Unknown task type");
         }
         printLine();
     }
@@ -314,8 +317,10 @@ public class Ui {
      */
     public void printUpdateDescriptionPrompt(Task task) {
         printLine();
-        out.println(" What would you like to rename this '" +
-                task.getTaskType().getDisplayName() + "' to?");
+        out.println(
+            " What would you like to rename this '"
+                + task.getTaskType().getDisplayName()
+                + "' to?");
         printLine();
     }
 
@@ -374,8 +379,12 @@ public class Ui {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
         var that = (Ui) obj;
         return Objects.equals(this.out, that.out);
     }
@@ -387,8 +396,6 @@ public class Ui {
 
     @Override
     public String toString() {
-        return "Ui[" +
-                "out=" + out + ']';
+        return "Ui[" + "out=" + out + ']';
     }
-
 }

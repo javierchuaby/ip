@@ -4,8 +4,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to exit the Duke application.
- * This command terminates the program gracefully.
+ * Represents a command to exit the Duke application. This command terminates the program
+ * gracefully.
  */
 public class ExitCommand implements Command {
     /**

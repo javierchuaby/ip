@@ -23,10 +23,9 @@ class TaskTest {
 
     @Test
     void constructor_emptyDescription_createsTask() {
-        AssertionError ex = org.junit.jupiter.api.Assertions.assertThrows(
-                AssertionError.class,
-                () -> new Todo("")
-        );
+        AssertionError ex =
+            org.junit.jupiter.api.Assertions.assertThrows(
+                AssertionError.class, () -> new Todo(""));
     }
 
     @Test

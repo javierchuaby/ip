@@ -4,8 +4,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command that can be executed in the Duke task management system.
- * All commands must implement the execute method to define their behavior.
+ * Represents a command that can be executed in the Duke task management system. All commands must
+ * implement the execute method to define their behavior.
  *
  * @author Javier Chua
  * @version 1.0

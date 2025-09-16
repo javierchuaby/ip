@@ -4,8 +4,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command executed when the user provides empty input.
- * Displays a message indicating that no command was recognized.
+ * Represents a command executed when the user provides empty input. Displays a message indicating
+ * that no command was recognized.
  */
 public class EmptyCommand implements Command {
     /**

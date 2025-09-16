@@ -6,8 +6,8 @@ import duke.task.Todo;
 import duke.ui.Ui;
 
 /**
- * Represents a command to create and add a todo task to the task list.
- * A todo task has only a description without any time constraints.
+ * Represents a command to create and add a todo task to the task list. A todo task has only a
+ * description without any time constraints.
  */
 public class TodoCommand implements Command {
 
@@ -26,8 +26,8 @@ public class TodoCommand implements Command {
     }
 
     /**
-     * Executes the todo command by creating a new todo task and adding it to the list.
-     * If the description is empty, shows usage information.
+     * Executes the todo command by creating a new todo task and adding it to the list. If the
+     * description is empty, shows usage information.
      *
      * @param tasks The task list to add the todo to
      * @param ui    The user interface for displaying results and errors

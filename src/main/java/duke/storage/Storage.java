@@ -21,10 +21,9 @@ import duke.task.TaskType;
 import duke.task.Todo;
 
 /**
- * Handles persistent storage of tasks to and from the file system.
- * Uses TaskType enum for type safety instead of magic strings.
- * Manages encoding tasks to text format and decoding them back to objects.
- * Provides error handling for corrupted files and atomic save operations.
+ * Handles persistent storage of tasks to and from the file system. Uses TaskType enum for type
+ * safety instead of magic strings. Manages encoding tasks to text format and decoding them back to
+ * objects. Provides error handling for corrupted files and atomic save operations.
  */
 public class Storage {
     // Constants for magic numbers
@@ -36,14 +35,24 @@ public class Storage {
 
     // Date/time format constants
     private static final DateTimeFormatter STORAGE_DATETIME_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     private static final DateTimeFormatter STORAGE_DATE_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String TIME_INDICATOR = "T";
 
     private final Path dataFile;
     private final Path dataDir;
 
+    /**
+     * Creates a Storage instance backed by the specified file path.
+     * <p>
+     * The parent directory is derived from the given path; if the path has no parent,
+     * the current working directory (".") is used. The actual directory creation is
+     * deferred and performed when needed by {@link #load()} or {@link #save(List)}.
+     *
+     * @param filePath the file path to persist tasks to (e.g., "data/duke.txt"); must be non-null and non-blank
+     * @throws AssertionError if assertions are enabled and {@code filePath} is null or blank
+     */
     public Storage(String filePath) {
         assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
 
@@ -60,9 +69,8 @@ public class Storage {
     }
 
     /**
-     * Loads tasks from the storage file.
-     * Creates an empty list if the file doesn't exist.
-     * Handles corrupted files by backing them up and returning empty list.
+     * Loads tasks from the storage file. Creates an empty list if the file doesn't exist. Handles
+     * corrupted files by backing them up and returning empty list.
      *
      * @return List of loaded Task objects
      */
@@ -92,8 +100,8 @@ public class Storage {
     }
 
     /**
-     * Saves the list of tasks to storage using atomic file operations.
-     * Writes to a temporary file first, then moves it to the final location.
+     * Saves the list of tasks to storage using atomic file operations. Writes to a temporary file
+     * first, then moves it to the final location.
      *
      * @param tasks The list of Task objects to save
      */
@@ -105,8 +113,12 @@ public class Storage {
         assert Files.exists(dataDir) : "Data directory should exist after ensureDataDir()";
 
         Path tmp = dataDir.resolve(dataFile.getFileName() + ".tmp");
-        try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+        try (BufferedWriter w =
+                 Files.newBufferedWriter(
+                     tmp,
+                     StandardCharsets.UTF_8,
+                     StandardOpenOption.CREATE,
+                     StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Task t : tasks) {
                 w.write(encode(t));
                 w.newLine();
@@ -118,7 +130,11 @@ public class Storage {
         }
 
         try {
-            Files.move(tmp, dataFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            Files.move(
+                tmp,
+                dataFile,
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException ioe) {
             try {
                 Files.move(tmp, dataFile, StandardCopyOption.REPLACE_EXISTING);
@@ -144,8 +160,8 @@ public class Storage {
     }
 
     /**
-     * Encodes a Task object into a tab-separated string for file storage.
-     * Uses TaskType enum for type safety instead of magic strings.
+     * Encodes a Task object into a tab-separated string for file storage. Uses TaskType enum for
+     * type safety instead of magic strings.
      *
      * @param t The Task to encode
      * @return Tab-separated string representation of the task
@@ -156,23 +172,29 @@ public class Storage {
         String done = t.isDone() ? DONE_FLAG : NOT_DONE_FLAG;
         TaskType type = t.getTaskType();
 
-        return switch (type) {
-            case TODO -> String.join("\t", type.getStorageCode(), done, t.getDescription());
-            case DEADLINE -> {
-                Deadline d = (Deadline) t;
-                yield String.join("\t", type.getStorageCode(), done, d.getDescription(), d.getBy());
-            }
-            case EVENT -> {
-                Event e = (Event) t;
-                yield String.join("\t", type.getStorageCode(), done, e.getDescription(),
-                        e.getFrom(), e.getTo());
-            }
-        };
+        switch (type) {
+        case TODO:
+            return String.join("\t", type.getStorageCode(), done, t.getDescription());
+        case DEADLINE:
+            Deadline d = (Deadline) t;
+            return String.join("\t", type.getStorageCode(), done, d.getDescription(), d.getBy());
+        case EVENT:
+            Event e = (Event) t;
+            return String.join(
+                "\t",
+                type.getStorageCode(),
+                done,
+                e.getDescription(),
+                e.getFrom(),
+                e.getTo());
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
-     * Parses a line from the storage file into a Task object.
-     * Uses TaskType enum for type safety instead of magic strings.
+     * Parses a line from the storage file into a Task object. Uses TaskType enum for type safety
+     * instead of magic strings.
      *
      * @param line The tab-separated string from the storage file
      * @return The corresponding Task object
@@ -220,8 +242,8 @@ public class Storage {
      * @return true if task is done, false otherwise
      */
     private boolean isDoneFromString(String doneStr) {
-        assert DONE_FLAG.equals(doneStr) || NOT_DONE_FLAG.equals(doneStr) :
-                "Done flag must be 0 or 1";
+        assert DONE_FLAG.equals(doneStr) || NOT_DONE_FLAG.equals(doneStr)
+            : "Done flag must be 0 or 1";
         return DONE_FLAG.equals(doneStr);
     }
 
@@ -235,11 +257,16 @@ public class Storage {
      * @return The created Task object
      */
     private Task createTaskByType(TaskType type, String desc, String[] parts, String originalLine) {
-        return switch (type) {
-            case TODO -> new Todo(desc);
-            case DEADLINE -> createDeadlineTask(desc, parts, originalLine);
-            case EVENT -> createEventTask(desc, parts, originalLine);
-        };
+        switch (type) {
+        case TODO:
+            return new Todo(desc);
+        case DEADLINE:
+            return createDeadlineTask(desc, parts, originalLine);
+        case EVENT:
+            return createEventTask(desc, parts, originalLine);
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -302,8 +329,8 @@ public class Storage {
     }
 
     /**
-     * Backs up a corrupted data file by renaming it with a timestamp.
-     * Prints warning messages to standard error.
+     * Backs up a corrupted data file by renaming it with a timestamp. Prints warning messages to
+     * standard error.
      *
      * @param ex The exception that indicated file corruption
      */
@@ -312,8 +339,11 @@ public class Storage {
             String suffix = ".corrupt-" + System.currentTimeMillis();
             Path backup = dataDir.resolve(dataFile.getFileName() + suffix);
             Files.move(dataFile, backup, StandardCopyOption.REPLACE_EXISTING);
-            System.err.println("[WARN] Data file appears corrupted: " + ex.getClass().getSimpleName()
-                    + ". Backed up to " + backup);
+            System.err.println(
+                "[WARN] Data file appears corrupted: "
+                    + ex.getClass().getSimpleName()
+                    + ". Backed up to "
+                    + backup);
         } catch (IOException ioe) {
             System.err.println("[WARN] Failed to back up corrupt file: " + ioe.getMessage());
         }

@@ -1,14 +1,13 @@
 package duke.gui;
 
+import java.io.IOException;
+
+import duke.MrMoon;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-
-import duke.MrMoon;
 
 /**
  * A GUI for MrMoon using FXML.

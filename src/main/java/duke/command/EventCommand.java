@@ -5,8 +5,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to create and add an event task to the task list.
- * An event task has a description, start time, and end time.
+ * Represents a command to create and add an event task to the task list. An event task has a
+ * description, start time, and end time.
  */
 public class EventCommand implements Command {
     /**
@@ -38,8 +38,8 @@ public class EventCommand implements Command {
     }
 
     /**
-     * Executes the event command by creating a new event task and adding it to the list.
-     * If the description is empty or the time format is invalid, shows appropriate error messages.
+     * Executes the event command by creating a new event task and adding it to the list. If the
+     * description is empty or the time format is invalid, shows appropriate error messages.
      *
      * @param tasks The task list to add the event to
      * @param ui    The user interface for displaying results and errors

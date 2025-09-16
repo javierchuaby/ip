@@ -1,8 +1,8 @@
 package duke.task;
 
 /**
- * Enum representing the different types of tasks in the Duke system.
- * Provides type safety and eliminates magic strings for task type codes.
+ * Enum representing the different types of tasks in the Duke system. Provides type safety and
+ * eliminates magic strings for task type codes.
  */
 public enum TaskType {
     TODO("T", "Todo"),
@@ -24,6 +24,22 @@ public enum TaskType {
     }
 
     /**
+     * Converts a storage code string to the corresponding TaskType.
+     *
+     * @param code The string code from storage file
+     * @return The matching TaskType enum value
+     * @throws IllegalArgumentException if the code is not recognized
+     */
+    public static TaskType fromStorageCode(String code) {
+        for (TaskType type : values()) {
+            if (type.storageCode.equals(code)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown task type code: " + code);
+    }
+
+    /**
      * Gets the storage code for this task type.
      *
      * @return The single character code used in storage files
@@ -39,21 +55,5 @@ public enum TaskType {
      */
     public String getDisplayName() {
         return displayName;
-    }
-
-    /**
-     * Converts a storage code string to the corresponding TaskType.
-     *
-     * @param code The string code from storage file
-     * @return The matching TaskType enum value
-     * @throws IllegalArgumentException if the code is not recognized
-     */
-    public static TaskType fromStorageCode(String code) {
-        for (TaskType type : values()) {
-            if (type.storageCode.equals(code)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown task type code: " + code);
     }
 }

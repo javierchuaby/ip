@@ -5,8 +5,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to create and add a deadline task to the task list.
- * A deadline task has a description and a due date/time.
+ * Represents a command to create and add a deadline task to the task list. A deadline task has a
+ * description and a due date/time.
  */
 public class DeadlineCommand implements Command {
 
@@ -29,8 +29,8 @@ public class DeadlineCommand implements Command {
     }
 
     /**
-     * Executes the deadline command by creating a new deadline task and adding it to the list.
-     * If the description is empty or the date format is invalid, shows appropriate error messages.
+     * Executes the deadline command by creating a new deadline task and adding it to the list. If
+     * the description is empty or the date format is invalid, shows appropriate error messages.
      *
      * @param tasks The task list to add the deadline to
      * @param ui    The user interface for displaying results and errors

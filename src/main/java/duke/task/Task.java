@@ -1,9 +1,9 @@
 package duke.task;
 
 /**
- * Abstract class representing a task in the Duke task management system.
- * All tasks have a description and completion status.
- * Subclasses must implement the toString method for display formatting.
+ * Abstract class representing a task in the Duke task management system. All tasks have a
+ * description and completion status. Subclasses must implement the toString method for display
+ * formatting.
  *
  * @author Your Name
  * @version 1.0
@@ -21,13 +21,13 @@ public abstract class Task {
     protected boolean isDone;
 
     /**
-     * Constructs a Task with the specified description.
-     * The task is initially marked as not done.
+     * Constructs a Task with the specified description. The task is initially marked as not done.
      *
      * @param description The description of the task
      */
     public Task(String description) {
-        assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
+        assert description != null && !description.trim().isEmpty()
+            : "Task description cannot be null or empty";
 
         this.description = description;
         this.isDone = false;
@@ -82,8 +82,8 @@ public abstract class Task {
     public abstract TaskType getTaskType();
 
     /**
-     * Returns the string representation of the task.
-     * Must be implemented by subclasses to define their specific format.
+     * Returns the string representation of the task. Must be implemented by subclasses to define
+     * their specific format.
      *
      * @return A string representation of the task
      */

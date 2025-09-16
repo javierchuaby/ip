@@ -19,11 +19,10 @@ import duke.ui.Ui;
 import duke.util.DateTimeUtil;
 import duke.util.UpdateStateUtil;
 
-
 /**
- * Main Duke application class that coordinates all components.
- * Handles the main program loop, user input processing, and command execution.
- * Manages the interaction between UI, Parser, TaskList, and Storage components.
+ * Main Duke application class that coordinates all components. Handles the main program loop, user
+ * input processing, and command execution. Manages the interaction between UI, Parser, TaskList,
+ * and Storage components.
  */
 public class MrMoon {
 
@@ -34,8 +33,8 @@ public class MrMoon {
     private UpdateStateUtil updateStateUtil;
 
     /**
-     * Constructs the main Duke application with the specified storage file path.
-     * Initializes all components and loads existing tasks from storage.
+     * Constructs the main Duke application with the specified storage file path. Initializes all
+     * components and loads existing tasks from storage.
      *
      * @param filePath The file path for task data storage
      */
@@ -59,16 +58,16 @@ public class MrMoon {
     }
 
     /**
-     * Constructs the main Duke application with a default storage path.
-     * Uses "data/duke.txt" as the default storage file.
+     * Constructs the main Duke application with a default storage path. Uses "data/duke.txt" as the
+     * default storage file.
      */
     public MrMoon() {
         this("data/duke.txt");
     }
 
     /**
-     * Main entry point for the Duke application.
-     * Creates and runs the application with command line argument support.
+     * Main entry point for the Duke application. Creates and runs the application with command line
+     * argument support.
      *
      * @param args Command line arguments, first argument used as a storage file path
      */
@@ -78,9 +77,8 @@ public class MrMoon {
     }
 
     /**
-     * Runs the main application loop.
-     * Processes user input, executes commands, and handles special clear confirmation logic.
-     * Exits when an exit command is received.
+     * Runs the main application loop. Processes user input, executes commands, and handles special
+     * clear confirmation logic. Exits when an exit command is received.
      */
     public void run() {
         ui.printWelcome();
@@ -119,7 +117,9 @@ public class MrMoon {
                 if (command instanceof UpdateCommand) {
                     UpdateCommand updateCmd = (UpdateCommand) command;
                     if (updateCmd.getTaskIndex() >= 1 && updateCmd.getTaskIndex() <= tasks.size()) {
-                        updateStateUtil = new UpdateStateUtil(updateCmd.getTaskIndex(),
+                        updateStateUtil =
+                            new UpdateStateUtil(
+                                updateCmd.getTaskIndex(),
                                 tasks.get(updateCmd.getTaskIndex() - 1));
                     }
                 }
@@ -149,10 +149,13 @@ public class MrMoon {
             if (c instanceof UpdateCommand) {
                 UpdateCommand updateCmd = (UpdateCommand) c;
                 if (updateCmd.getTaskIndex() >= 1 && updateCmd.getTaskIndex() <= tasks.size()) {
-                    updateStateUtil = new UpdateStateUtil(updateCmd.getTaskIndex(),
+                    updateStateUtil =
+                        new UpdateStateUtil(
+                            updateCmd.getTaskIndex(),
                             tasks.get(updateCmd.getTaskIndex() - 1));
                     GuiUi updateUi = new GuiUi();
-                    updateUi.printUpdatePrompt(updateStateUtil.getOriginalTask(), updateStateUtil.getTaskIndex());
+                    updateUi.printUpdatePrompt(
+                        updateStateUtil.getOriginalTask(), updateStateUtil.getTaskIndex());
                     return updateUi.getResponse();
                 }
             }
@@ -175,18 +178,24 @@ public class MrMoon {
     }
 
     /**
-     * Handles the multi-step update conversation.
-     * Returns true when the update is complete, false to continue.
+     * Handles the multi-step update conversation. Returns true when the update is complete, false
+     * to continue.
      */
     private boolean handleUpdateState(String input) {
-        return switch (updateStateUtil.getCurrentStep()) {
-            case WAITING_FOR_CHOICE -> handleUpdateChoice(input);
-            case WAITING_FOR_DESCRIPTION -> handleDescriptionUpdate(input);
-            case WAITING_FOR_DATE -> handleDateUpdate(input);
-            case WAITING_FOR_START_DATE -> handleStartDateUpdate(input);
-            case WAITING_FOR_END_DATE -> handleEndDateUpdate(input);
-            default -> true; // Should not happen
-        };
+        switch (updateStateUtil.getCurrentStep()) {
+        case WAITING_FOR_CHOICE:
+            return handleUpdateChoice(input);
+        case WAITING_FOR_DESCRIPTION:
+            return handleDescriptionUpdate(input);
+        case WAITING_FOR_DATE:
+            return handleDateUpdate(input);
+        case WAITING_FOR_START_DATE:
+            return handleStartDateUpdate(input);
+        case WAITING_FOR_END_DATE:
+            return handleEndDateUpdate(input);
+        default:
+            return true; // Should not happen
+        }
     }
 
     private boolean handleUpdateChoice(String input) {
@@ -223,7 +232,8 @@ public class MrMoon {
         }
 
         // Create updated task with new description
-        Task updatedTask = createUpdatedTask(updateStateUtil.getOriginalTask(), newDescription, null, null);
+        Task updatedTask =
+            createUpdatedTask(updateStateUtil.getOriginalTask(), newDescription, null, null);
         replaceTask(updateStateUtil.getTaskIndex(), updatedTask);
         ui.printTaskUpdated(updatedTask, "description");
         return true; // Update complete
@@ -235,12 +245,16 @@ public class MrMoon {
             DateTimeUtil.parseLenientResult(newDate);
 
             // Create updated task with new date
-            Task updatedTask = createUpdatedTask(updateStateUtil.getOriginalTask(), null, newDate, null);
+            Task updatedTask =
+                createUpdatedTask(updateStateUtil.getOriginalTask(), null, newDate, null);
             replaceTask(updateStateUtil.getTaskIndex(), updatedTask);
             ui.printTaskUpdated(updatedTask, "date/time");
             return true; // Update complete
         } catch (Exception e) {
-            ui.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            ui.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return false;
         }
     }
@@ -255,7 +269,10 @@ public class MrMoon {
             ui.printUpdateEndDatePrompt();
             return false; // Continue to next step
         } catch (Exception e) {
-            ui.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            ui.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return false;
         }
     }
@@ -266,13 +283,20 @@ public class MrMoon {
             DateTimeUtil.parseLenientResult(newEndDate);
 
             // Create updated task with new dates
-            Task updatedTask = createUpdatedTask(updateStateUtil.getOriginalTask(), null,
-                    updateStateUtil.getNewStartDate(), newEndDate);
+            Task updatedTask =
+                createUpdatedTask(
+                    updateStateUtil.getOriginalTask(),
+                    null,
+                    updateStateUtil.getNewStartDate(),
+                    newEndDate);
             replaceTask(updateStateUtil.getTaskIndex(), updatedTask);
             ui.printTaskUpdated(updatedTask, "dates");
             return true; // Update complete
         } catch (Exception e) {
-            ui.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            ui.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return false;
         }
     }
@@ -280,7 +304,8 @@ public class MrMoon {
     /**
      * Creates an updated version of a task with new values.
      */
-    private Task createUpdatedTask(Task original, String newDesc, String newDate1, String newDate2) {
+    private Task createUpdatedTask(
+        Task original, String newDesc, String newDate1, String newDate2) {
         String description = newDesc != null ? newDesc : original.getDescription();
         Task newTask;
 
@@ -401,13 +426,17 @@ public class MrMoon {
     private String handleGuiUpdateDate(String input, GuiUi guiUi) {
         try {
             DateTimeUtil.parseLenientResult(input);
-            Task updatedTask = createUpdatedTask(updateStateUtil.getOriginalTask(), null, input, null);
+            Task updatedTask =
+                createUpdatedTask(updateStateUtil.getOriginalTask(), null, input, null);
             replaceTask(updateStateUtil.getTaskIndex(), updatedTask);
             guiUi.printTaskUpdated(updatedTask, "date/time");
             updateStateUtil = null;
             return guiUi.getResponse();
         } catch (Exception e) {
-            guiUi.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            guiUi.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return guiUi.getResponse();
         }
     }
@@ -420,7 +449,10 @@ public class MrMoon {
             guiUi.printUpdateEndDatePrompt();
             return guiUi.getResponse();
         } catch (Exception e) {
-            guiUi.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            guiUi.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return guiUi.getResponse();
         }
     }
@@ -428,14 +460,21 @@ public class MrMoon {
     private String handleGuiUpdateEndDate(String input, GuiUi guiUi) {
         try {
             DateTimeUtil.parseLenientResult(input);
-            Task updatedTask = createUpdatedTask(updateStateUtil.getOriginalTask(), null,
-                    updateStateUtil.getNewStartDate(), input);
+            Task updatedTask =
+                createUpdatedTask(
+                    updateStateUtil.getOriginalTask(),
+                    null,
+                    updateStateUtil.getNewStartDate(),
+                    input);
             replaceTask(updateStateUtil.getTaskIndex(), updatedTask);
             guiUi.printTaskUpdated(updatedTask, "dates");
             updateStateUtil = null;
             return guiUi.getResponse();
         } catch (Exception e) {
-            guiUi.printUsage("Invalid date/time format. " + DateTimeUtil.examplesHelp() + "\nPlease try again:");
+            guiUi.printUsage(
+                "Invalid date/time format. "
+                    + DateTimeUtil.examplesHelp()
+                    + "\nPlease try again:");
             return guiUi.getResponse();
         }
     }

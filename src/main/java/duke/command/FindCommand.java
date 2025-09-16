@@ -7,8 +7,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Represents a command to find tasks that contain a specific keyword in their description.
- * Shows all matching tasks as a numbered list.
+ * Represents a command to find tasks that contain a specific keyword in their description. Shows
+ * all matching tasks as a numbered list.
  */
 public class FindCommand implements Command {
     /**
@@ -26,8 +26,8 @@ public class FindCommand implements Command {
     }
 
     /**
-     * Executes the find command by searching for tasks containing the keyword.
-     * If the keyword is empty, shows usage information.
+     * Executes the find command by searching for tasks containing the keyword. If the keyword is
+     * empty, shows usage information.
      *
      * @param tasks The task list to search through
      * @param ui    The user interface for displaying results

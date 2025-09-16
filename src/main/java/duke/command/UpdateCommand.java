@@ -5,8 +5,8 @@ import duke.task.TaskList;
 import duke.ui.Ui;
 
 /**
- * Command to initiate updating an existing task.
- * This command starts the interactive update process.
+ * Command to initiate updating an existing task. This command starts the interactive update
+ * process.
  */
 public class UpdateCommand implements Command {
     private final int taskIndex;
@@ -27,8 +27,10 @@ public class UpdateCommand implements Command {
         }
 
         if (taskIndex < 1 || taskIndex > tasks.size()) {
-            ui.printUsage("Invalid task number. Please specify a number between 1 and "
-                    + tasks.size() + ".");
+            ui.printUsage(
+                "Invalid task number. Please specify a number between 1 and "
+                    + tasks.size()
+                    + ".");
             return;
         }
 

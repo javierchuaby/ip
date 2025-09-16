@@ -69,7 +69,10 @@ public class GuiUi extends Ui {
 
     @Override
     public void printMarked(Task task, boolean mark) {
-        append(mark ? "Nice! I've marked this task as done!" : "Nice! I've marked this task as not done yet!");
+        append(
+            mark
+                ? "Nice! I've marked this task as done!"
+                : "Nice! I've marked this task as not done yet!");
         append(task.toString());
     }
 
@@ -94,13 +97,21 @@ public class GuiUi extends Ui {
 
     @Override
     public void printAgendaForDate(LocalDate date, List<Task> items, TaskList fullList) {
-        append("Tasks on " + date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy")) + ":");
+        append(
+            "Tasks on "
+                + date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy"))
+                + ":");
         if (items.isEmpty()) {
             append("(none)");
         } else {
             for (int i = 0; i < items.size(); i++) {
                 int originalIdx = fullList.indexOf(items.get(i)) + 1;
-                append((i + 1) + ". " + items.get(i).toString() + " [#" + originalIdx + " in main list]");
+                append((i + 1)
+                        + ". "
+                        + items.get(i).toString()
+                        + " [#"
+                        + originalIdx
+                        + " in main list]");
             }
         }
     }
@@ -122,8 +133,8 @@ public class GuiUi extends Ui {
     }
 
     /**
-     * Prints an error message for unknown user commands.
-     * Includes a helpful list of available commands.
+     * Prints an error message for unknown user commands. Includes a helpful list of available
+     * commands.
      *
      * @param input The unrecognized command string from the user
      */
@@ -166,6 +177,8 @@ public class GuiUi extends Ui {
             append("2. Edit date");
             append("Please choose (1/2):");
             break;
+        default:
+            throw new IllegalArgumentException("Unknown task type");
         }
     }
 
@@ -174,8 +187,10 @@ public class GuiUi extends Ui {
      */
     @Override
     public void printUpdateDescriptionPrompt(Task task) {
-        append("What would you like to rename this '" +
-                task.getTaskType().getDisplayName() + "' to?");
+        append(
+            "What would you like to rename this '"
+                + task.getTaskType().getDisplayName()
+                + "' to?");
     }
 
     /**

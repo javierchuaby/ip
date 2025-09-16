@@ -6,11 +6,9 @@ import java.util.List;
 
 import duke.storage.Storage;
 
-
 /**
- * Represents the collection of tasks in the Duke application.
- * Manages a list of tasks and handles persistence through Storage.
- * Provides methods for adding, removing, marking, and querying tasks.
+ * Represents the collection of tasks in the Duke application. Manages a list of tasks and handles
+ * persistence through Storage. Provides methods for adding, removing, marking, and querying tasks.
  */
 public class TaskList {
 
@@ -61,8 +59,8 @@ public class TaskList {
     }
 
     /**
-     * Returns an unmodifiable view of the task list.
-     * Changes to the returned list will not affect the original task list.
+     * Returns an unmodifiable view of the task list. Changes to the returned list will not affect
+     * the original task list.
      *
      * @return An unmodifiable copy of the task list
      */
@@ -79,6 +77,19 @@ public class TaskList {
         assert t != null : "Task cannot be null";
 
         tasks.add(t);
+        storage.save(tasks);
+    }
+
+    /**
+     * Adds a task at the specified index.
+     *
+     * @param idx  The index where to insert the task (0-based)
+     * @param task The task to add
+     */
+    public void add(int idx, Task task) {
+        assert task != null : "Task cannot be null";
+        assert idx >= 0 && idx <= tasks.size() : "Index must be within bounds";
+        tasks.add(idx, task);
         storage.save(tasks);
     }
 
@@ -118,8 +129,8 @@ public class TaskList {
     }
 
     /**
-     * Finds the index of the specified task in the list.
-     * Uses object identity comparison to find the task.
+     * Finds the index of the specified task in the list. Uses object identity comparison to find
+     * the task.
      *
      * @param t The task to find
      * @return The index of the task, or -1 if not found
@@ -134,9 +145,8 @@ public class TaskList {
     }
 
     /**
-     * Returns a list of tasks that occur on the specified date.
-     * For deadlines, matches tasks due on the date.
-     * For events, matches tasks that span or include the date.
+     * Returns a list of tasks that occur on the specified date. For deadlines, matches tasks due on
+     * the date. For events, matches tasks that span or include the date.
      *
      * @param date The date to search for tasks
      * @return A list of tasks occurring on the given date
@@ -187,18 +197,5 @@ public class TaskList {
         }
 
         return matches;
-    }
-
-    /**
-     * Adds a task at the specified index.
-     *
-     * @param idx  The index where to insert the task (0-based)
-     * @param task The task to add
-     */
-    public void add(int idx, Task task) {
-        assert task != null : "Task cannot be null";
-        assert idx >= 0 && idx <= tasks.size() : "Index must be within bounds";
-        tasks.add(idx, task);
-        storage.save(tasks);
     }
 }
