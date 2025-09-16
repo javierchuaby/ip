@@ -1,265 +1,149 @@
-# Mr Moon - Your Personal Task Manager
+# Mr Moon - User Guide 🌙
 
-**A Java-based task management application with dual CLI/GUI interface support**
+**Mr Moon** is your personal task management assistant that helps you organize todos, deadlines, and events efficiently.
 
-
-Mr Moon is a comprehensive task management application that bridges the gap between command-line efficiency and graphical user experience. Built with Java 17 and JavaFX, it provides seamless task organization with persistent storage and intelligent date parsing.
-
-
-
-## ✨ Key Features
-
-### **Task Management**
-- **Todo Tasks**: Simple task tracking with descriptions
-- **Deadline Tasks**: Time-sensitive tasks with due dates
-- **Event Tasks**: Scheduled activities with start and end times
-- **Smart Updates**: Modify task descriptions and dates dynamically
-
-### **Dual Interface Support**
-- **CLI Mode**: Terminal-based interface for power users
-- **GUI Mode**: JavaFX-powered graphical interface for intuitive interaction
-- **Seamless Switching**: Choose your preferred interaction method
-
-### **Advanced Functionality**
-- **Flexible Date Parsing**: Natural language date input support
-- **Persistent Storage**: Automatic file-based task preservation
-- **Search Capabilities**: Find tasks by keywords instantly
-- **Bulk Operations**: Clear all tasks with confirmation prompts
-
-
-
-## 🚀 Quick Start
-
-### **Prerequisites**
-- **Java 17** or higher
-- **Gradle** (included via wrapper)
-- **JavaFX Runtime** (for GUI mode)
+## 🚀 **Quick Start**
 
 ### **Installation**
+1. **Download:** Get the latest `MrMoon.jar` from the releases page
+2. **Requirements:** Java 17 or higher
+3. **Run:** Double-click `MrMoon.jar` or use command line
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ip
-   ```
+### **Running Mr Moon**
+```shell script
+# GUI (Recommended)
+java -jar MrMoon.jar
 
-2. **Build the project**
-   ```bash
-   ./gradlew build
-   ```
-
-3. **Run the application**
-
-   **GUI Mode (Recommended)**
-   ```bash
-   ./gradlew run
-   ```
-
-   **CLI Mode**
-   ```bash
-   java -cp build/classes/java/main duke.MrMoon
-   ```
-
-### **Platform-Specific Commands**
-
-**Windows:**
-```batch
-gradlew.bat run
-```
-
-**macOS/Linux:**
-```bash
-./gradlew run
+# Command Line
+java -cp MrMoon.jar duke.MrMoon
 ```
 
 
-## 📖 Usage Guide
+**Troubleshooting:**
+- If double-click doesn't work: Right-click → "Open with Java"
+- "Java not found" error: Install Java 17+ from oracle.com
+- Permission errors: Run `chmod +x MrMoon.jar` (Mac/Linux)
 
-### **Core Commands**
+---
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `todo <description>` | Create a simple task | `todo read book` |
-| `deadline <description> /by <date>` | Create deadline task | `deadline submit assignment /by 2023-10-15 2359` |
-| `event <description> /from <date> /to <date>` | Create event task | `event project meeting /from 2023-10-15 1400 /to 1600` |
-| `list` | Display all tasks | `list` |
-| `mark <index>` | Mark task as completed | `mark 1` |
-| `unmark <index>` | Mark task as incomplete | `unmark 1` |
-| `delete <index>` | Remove task | `delete 1` |
-| `update <index>` | Modify existing task | `update 1` |
-| `find <keyword>` | Search tasks | `find meeting` |
-| `clear` | Remove all tasks | `clear` |
-| `bye` | Exit application | `bye` |
+## 📋 **Command Reference** *(Your Main Navigation)*
 
-### **Flexible Date Formats**
+| Command | What You Type | Example |
+|---------|---------------|---------|
+| **Create Tasks** |
+| `todo` | `todo [description]` | `todo Buy milk` |
+| `deadline` | `deadline [task] /by [date]` | `deadline Report /by 2024-12-25` |
+| `event` | `event [task] /from [date] /to [date]` | `event Meeting /from 2024-12-20 2pm /to 4pm` |
+| **Manage Tasks** |
+| `list` | `list` | Shows all your tasks |
+| `mark` | `mark [number]` | `mark 2` (completes task 2) |
+| `unmark` | `unmark [number]` | `unmark 2` (uncompletes task 2) |
+| `delete` | `delete [number]` | `delete 3` (removes task 3) |
+| **Find & View** |
+| `find` | `find [word]` | `find meeting` |
+| `on` | `on [date]` | `on 2024-12-25` (agenda view) |
+| **Advanced** |
+| `update` | `update [number]` | Interactive task editing |
+| `clear` | `clear` | Delete all tasks |
+| `bye` | `bye` | Exit application |
 
-Mr. Moon supports multiple date input formats :
+---
 
-- **ISO Format**: `2023-10-15`
-- **Standard Format**: `15/10/2023`
-- **Natural Language**: `Oct 15 2023`
-- **With Time**: `2023-10-15 1400`
-- **12-Hour Format**: `15/10/2023 2:00pm`
+## 📝 **Creating Tasks**
 
-### **Task Update Process**
-
-When using the `update` command:
-1. **Select Update Type**: Choose description (`1` or `rename`) or date (`2` or `edit date`)
-2. **Enter New Values**: Follow guided prompts for input
-3. **Confirmation**: Review updated task details
-
-
-
-## 🛠️ Development
-
-### **Project Structure**
-
+### **Todo Tasks**
+Simple tasks without dates:
 ```
-src/
-├── main/
-│   ├── java/duke/
-│   │   ├── MrMoon.java          # CLI entry point
-│   │   ├── command/             # Command implementations  
-│   │   ├── gui/                 # JavaFX components
-│   │   │   ├── Launcher.java    # GUI launcher
-│   │   │   └── Main.java        # JavaFX application
-│   │   ├── parser/              # Input parsing logic
-│   │   ├── storage/             # File persistence layer
-│   │   ├── task/                # Task type definitions
-│   │   ├── ui/                  # User interface handlers
-│   │   └── util/                # Utility classes
-│   └── resources/               # GUI assets (FXML, CSS)
-└── test/                        # Unit test suite
-```
-
-### **Build Commands**
-
-**Compile and Build:**
-```bash
-./gradlew build
-```
-
-**Run Tests:**
-```bash
-./gradlew test
-```
-
-**Create JAR:**
-```bash
-./gradlew shadowJar
-java -jar build/libs/duke.jar
-```
-
-**Code Quality:**
-```bash
-./gradlew spotlessApply    # Format code
-./gradlew checkstyleMain   # Style validation
+todo buy groceries
+todo call mom
 ```
 
 
-
-## 📊 Sample Session
-
+### **Deadline Tasks**
+Tasks with due dates:
 ```
-Hello! I'm Mr. Moon
-What can I do for you?
-
->> todo read book
-Got it. I've added this task:
-  [T][ ] read book
-Now you have 1 tasks in the list.
-
->> deadline submit report /by 2023-10-15 2359
-Got it. I've added this task:
-  [D][ ] submit report (by: Oct 15 2023 11:59 PM)
-Now you have 2 tasks in the list.
-
->> list
-Here are the tasks in your list:
-1.[T][ ] read book
-2.[D][ ] submit report (by: Oct 15 2023 11:59 PM)
-
->> mark 1
-Nice! I've marked this task as done:
-  [T][X] read book
-
->> bye
-Bye. Hope to see you again soon!
+deadline submit assignment /by 25/12/2024
+deadline pay bills /by 31/12/2024 1800
 ```
 
 
-## 💾 Data Storage
-
-### **Storage Configuration**
-- **Default Location**: `data/duke.txt`
-- **Custom Location**: Specify as command-line argument
-- **Format**: Plain text serialization
-- **Auto-Creation**: Directories and files created automatically
-
-### **Custom Data File**
-```bash
-java -cp build/classes/java/main duke.MrMoon path/to/custom/datafile.txt
+### **Event Tasks**
+Tasks with start and end times:
+```
+event team meeting /from 20/12/2024 1400 /to 20/12/2024 1500
+event vacation /from 25/12/2024 /to 30/12/2024
 ```
 
 
-## 🔧 Troubleshooting
+### **Date Formats You Can Use**
+- `25/12/2024` (day/month/year)
+- `25-12-2024` (day-month-year)
+- `25.12.2024` (day.month.year)
+- `25 Dec 2024` (day month year)
+- `2024-12-25` (year-month-day)
 
-### **Common Issues**
+### **Time Formats**
+- `1400` (24-hour format)
+- Add time after date: `25/12/2024 1400`
 
-**Java Version Error:**
-```bash
-# Verify Java installation
-java -version
-# Ensure Java 17+ is installed
-```
+---
 
-**Data File Problems:**
-- Delete `data/duke.txt` to reset storage
-- Verify file system permissions
-- Check directory structure integrity
+## 🎯 **Managing Tasks**
 
+### **View Tasks**
+- `list` - See all tasks
+- `on 25/12/2024` - See tasks for specific date
+- `find meeting` - Search for tasks containing "meeting"
 
-## 🧪 Testing
+### **Update Tasks**
+Use `update [task number]` for step-by-step editing:
+1. Choose what to change (description or date)
+2. Enter new information
+3. Confirm changes
 
-### **Running Tests**
-```bash
-./gradlew test                    # All tests
-./gradlew test --tests "*.TaskTest"  # Specific test class
-```
+### **Mark Complete**
+- `mark 3` - Mark task 3 as done ✓
+- `unmark 3` - Mark task 3 as not done
 
-### **Test Coverage**
-- Unit tests for core functionality
-- Integration tests for file operations
-- GUI component testing with JavaFX
+### **Delete Tasks**
+- `delete 3` - Remove task 3
+- `clear` - Remove all tasks (asks for confirmation)
 
+---
 
-## 🤝 Contributing
+## 💾 **Your Data**
 
-### **Development Guidelines**
-1. **Code Style**: Follow established Java conventions
-2. **Testing**: Ensure all tests pass before submission
-3. **Documentation**: Update README for new features
-4. **Build Verification**: Run `./gradlew build` successfully
+**Automatic Save:** Tasks save to `data/duke.txt` automatically
 
-### **Contribution Process**
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/new-feature`)
-3. Commit changes (`git commit -m 'Add new feature'`)
-4. Push branch (`git push origin feature/new-feature`)
-5. Open Pull Request
+**Custom Storage:** `java -jar duke.jar [your-file-path]`
 
+**Backup:** Copy the `data` folder to keep your tasks safe
 
-## 📄 License
+---
 
-This project is developed as an educational application for learning Java and software engineering principles.
+## ❓ **Troubleshooting**
 
+**"Invalid date format"**
+→ Try: `25/12/2024` or `2024-12-25`
 
-## 🆘 Support
+**"Task not found"**
+→ Use `list` to see current task numbers
 
-### **Getting Help**
-- Use `help` command within the application
-- Review troubleshooting section above
-- Check sample usage examples
-- Examine project structure documentation
+**App won't start**
+→ Check Java 17+ installed: `java -version`
 
-**Built with Java 17, JavaFX, and Gradle** 🚀
+**Data not saving**
+→ Make sure app has write permissions in its folder
+
+---
+
+## 💡 **Tips**
+
+- **Task numbers change** when you delete tasks - always check `list` first
+- **Use keywords** in task names to find them easier with `find`
+- **Check your agenda** with `on [today's date]` each morning
+- **Times are optional** - just dates work fine for most tasks
+
+---
+
+**Happy task managing with Mr Moon! 🌙**
