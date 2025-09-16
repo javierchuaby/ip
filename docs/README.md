@@ -4,19 +4,11 @@
 
 ## 🚀 **Quick Start**
 
-### **Installation**
-1. **Download:** Get the latest `duke.jar` from the releases page
-2. **Requirements:** Java 17 or higher
-3. **Run:** Double-click `duke.jar` or use command line
-
-### **Running Mr Moon**
-```
-# GUI (Recommended)
-java -jar MrMoon.jar
-
-# Command Line
-java -cp MrMoon.jar duke.MrMoon
-```
+### **How to Run:**
+1. **Download** the latest `MrMoon.jar` from the releases page
+2. Place the JAR file in an empty folder
+3. Open terminal/command prompt in that folder
+4. Run `java -jar MrMoon.jar`
 
 
 **Troubleshooting:**
