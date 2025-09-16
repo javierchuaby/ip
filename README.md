@@ -122,8 +122,6 @@ src/
 │   │   ├── MrMoon.java          # CLI entry point
 │   │   ├── command/             # Command implementations  
 │   │   ├── gui/                 # JavaFX components
-│   │   │   ├── Launcher.java    # GUI launcher
-│   │   │   └── Main.java        # JavaFX application
 │   │   ├── parser/              # Input parsing logic
 │   │   ├── storage/             # File persistence layer
 │   │   ├── task/                # Task type definitions
