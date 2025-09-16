@@ -1,4 +1,4 @@
-# Mr Moon - Your Personal Task Manager
+# 🌝 Mr Moon - Your Personal Task Manager
 
 MrMoon is a sophisticated task management application built with Java and JavaFX that helps you organize your daily activities.
 
